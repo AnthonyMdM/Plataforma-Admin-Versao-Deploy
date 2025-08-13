@@ -1,40 +1,28 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Plataforma de Administração de Vendas
 
-## Getting Started
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-blue)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2d3748)
+![SQLite](https://img.shields.io/badge/SQLite-3.45-lightblue)
 
-First, run the development server:
+## 📌 Sobre o Projeto
+Esta é uma plataforma web para administração e controle de vendas, desenvolvida com **Next.js** para o front-end e back-end, estilizada com **Tailwind CSS** e utilizando **SQLite** como banco de dados, gerenciado pelo **Prisma ORM**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+O sistema está em **desenvolvimento** e tem como objetivo oferecer uma interface moderna e intuitiva para:
+- Cadastro e gerenciamento de produtos
+- Registro e acompanhamento de vendas
+- Controle de clientes
+- Relatórios e estatísticas de vendas
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tecnologias Utilizadas
+- **Next.js** – Framework React para aplicações web rápidas e otimizadas
+- **Tailwind CSS** – Estilização rápida e responsiva
+- **SQLite** – Banco de dados leve e fácil de configurar
+- **Prisma ORM** – Mapeamento objeto-relacional para interação com o banco
+- **TypeScript** (opcional, se usado no projeto)
+- **Node.js** – Ambiente de execução
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# plataformaAdmin
->>>>>>> 9816f2649263b8083dd8d7f02feaf445c9ea67aa
+---
