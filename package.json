@@ -10,12 +10,11 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.14.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "next": "15.4.5",
     "next-auth": "^5.0.0-beta.29",
-    "prisma": "^6.13.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "^4.0.15"
@@ -29,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
+    "prisma": "^6.14.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"

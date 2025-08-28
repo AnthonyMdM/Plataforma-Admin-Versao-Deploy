@@ -1,4 +1,3 @@
-import { UserContextProvider } from "../componentes/context/useContex";
 import Header from "../componentes/principal/Header";
 
 export default function PrincipalLayout({
@@ -9,7 +8,7 @@ export default function PrincipalLayout({
   return (
     <div>
       <Header />
-      <UserContextProvider>{children}</UserContextProvider>
+      {children}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -8,21 +9,21 @@ datasource db {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   Name           String
-  email          String   @unique
+  email          String  @unique
   hashedPassword String
   Role           String
-  Venda          Venda[]
+  vendas         Venda[]
 }
 
 model Venda {
-  id     Int       @id @default(autoincrement())
-  userId Int
-  data   DateTime
-
-  user   User      @relation(fields: [userId], references: [id])
-  produtos venda_produto[]
+  id            Int             @id @default(autoincrement())
+  userId        Int
+  data          DateTime
+  valor_total   Int?
+  user          User            @relation(fields: [userId], references: [id])
+  venda_produto venda_produto[]
 }
 
 model Produto {
@@ -31,18 +32,31 @@ model Produto {
   unidadePesagem String
   preco          Int
   perecivel      Boolean
-
-  vendas         venda_produto[]
+  venda_produto  venda_produto[]
 }
 
 model venda_produto {
-  id                    Int      @id @default(autoincrement())
-  produtoId             Int
-  vendaId               Int
-  quantidade            Int
-  preco_unitario        Int
+  id                       Int     @id @default(autoincrement())
+  produtoId                Int
+  vendaId                  Int
+  quantidade               Int
+  preco_unitario           Int
   preco_produto_totaltotal Int
+  Venda                    Venda   @relation(fields: [vendaId], references: [id])
+  Produto                  Produto @relation(fields: [produtoId], references: [id])
+}
 
-  produto               Produto  @relation(fields: [produtoId], references: [id])
-  venda                 Venda    @relation(fields: [vendaId], references: [id])
+view ProdutosMaisVendidos {
+  produtoId      Int?
+  nome           String?
+  unidadePesagem String?
+  total_vendido  Int?
+  valor_total    Int?
+}
+
+enum Role {
+  FUNCIONARIO
+  ADMINISTRADOR
+  DESENVOLVEDOR
+  CLIENTE
 }
