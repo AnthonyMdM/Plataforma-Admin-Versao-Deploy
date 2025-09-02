@@ -28,7 +28,7 @@ model Venda {
 
 model Produto {
   id             Int             @id @default(autoincrement())
-  Nome           String
+  nome_produto   String
   unidadePesagem String
   preco          Int
   perecivel      Boolean
@@ -52,6 +52,17 @@ view ProdutosMaisVendidos {
   unidadePesagem String?
   total_vendido  Int?
   valor_total    Int?
+}
+
+view vendas_telas {
+  id                       Int?
+  Name                     String?
+  data                     DateTime?
+  nome_produto             String?
+  preco                    Int?
+  unidadePesagem           String?
+  quantidade               Int?
+  preco_produto_totaltotal Int?
 }
 
 enum Role {

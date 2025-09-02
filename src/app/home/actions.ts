@@ -37,3 +37,29 @@ export async function produtosVendidos() {
   });
   return { produtos };
 }
+export async function getVendas(
+  idVendas: number,
+  page: number,
+  pageSize: number
+) {
+  const vendas = await prisma.vendas_telas.findMany({
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    orderBy: { data: "desc" },
+    where: {
+      id: { equals: idVendas },
+    },
+  });
+
+  const total = await prisma.venda.count();
+
+  return {
+    vendas,
+    pagination: {
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    },
+  };
+}
