@@ -37,11 +37,7 @@ export async function produtosVendidos() {
   });
   return { produtos };
 }
-export async function getVendas(
-  idVendas: number,
-  page: number,
-  pageSize: number
-) {
+export async function getVendas(idVendas: number, page: number, pageSize = 5) {
   const vendas = await prisma.vendas_telas.findMany({
     skip: (page - 1) * pageSize,
     take: pageSize,
@@ -51,15 +47,14 @@ export async function getVendas(
     },
   });
 
-  const total = await prisma.venda.count();
+  const total = await prisma.vendas_telas.count({
+    where: {
+      id: { equals: idVendas },
+    },
+  });
 
   return {
     vendas,
-    pagination: {
-      total,
-      page,
-      pageSize,
-      totalPages: Math.ceil(total / pageSize),
-    },
+    totalPages: Math.ceil(total / pageSize),
   };
 }
