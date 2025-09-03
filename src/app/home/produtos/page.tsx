@@ -3,6 +3,7 @@ import React from "react";
 import { produtosVendidos } from "../actions";
 import { ProdutosMaisVendidos } from "@prisma/client";
 import Image from "next/image";
+import TabelSkeleton from "@/app/componentes/skeleton/TabelSkeleton";
 
 type SortKey = keyof ProdutosMaisVendidos; // "produtoId" | "nome" | "total_vendido" | "unidadePesagem" | "valor_total"
 
@@ -74,7 +75,7 @@ export default function Page() {
   return (
     <div className="p-6 bg-white text-black">
       {error && <p>{error}</p>}
-      {loading && <p>Loading...</p>}
+      {loading && <TabelSkeleton columns={5} lines={5} />}
 
       {!loading && !error && (
         <table className="mt-100 grind w-full h-screen text-center items-center font-poppins text-xl">
