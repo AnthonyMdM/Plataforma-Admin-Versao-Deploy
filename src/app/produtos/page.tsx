@@ -10,7 +10,7 @@ export default async function PageProdutos() {
     <div>
       <ul>
         {produto.map((item) => (
-          <li key={item.id}>{item.Nome}</li>
+          <li key={item.id}>{item.nome_produto}</li>
         ))}
       </ul>
     </div>

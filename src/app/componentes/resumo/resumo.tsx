@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-export default function test() {
+export default async function test() {
   const anosDisponiveis = await prisma.venda.groupBy({
     by: ["data"],
     orderBy: { data: "asc" },

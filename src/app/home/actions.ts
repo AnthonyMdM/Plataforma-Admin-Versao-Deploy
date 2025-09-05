@@ -58,3 +58,11 @@ export async function getVendas(idVendas: number, page: number, pageSize = 5) {
     totalPages: Math.ceil(total / pageSize),
   };
 }
+
+export async function getIdVendas() {
+  const vendas = await prisma.venda.findMany({
+    select: { id: true },
+  });
+
+  return vendas;
+}
