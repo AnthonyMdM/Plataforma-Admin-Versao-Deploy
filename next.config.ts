@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/",
+<<<<<<< HEAD
         destination: "/home",
+=======
+        destination: "/home/resumo",
+>>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
         permanent: true,
       },
     ];

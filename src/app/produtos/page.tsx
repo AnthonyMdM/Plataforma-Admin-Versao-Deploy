@@ -11,6 +11,7 @@ export default async function PageProdutos() {
       <ul>
         {produto.map((item) => (
           <li key={item.id}>{item.nome_produto}</li>
+
         ))}
       </ul>
     </div>
