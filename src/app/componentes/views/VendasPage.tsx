@@ -30,7 +30,7 @@ export default function VendasPage({ params }: { params: string }) {
   const totalPages: number = data?.totalPages || 1;
 
   return (
-    <div className="p-6 bg-white text-black h-screen flex flex-col items-center gap-4">
+    <div className="p-6 bg-white text-black h-[100%] items-center gap-4">
       {isLoading && <TabelSkeleton columns={6} lines={6} />}
       {error && <p className="text-red-600">{error}</p>}
 
@@ -52,7 +52,7 @@ export default function VendasPage({ params }: { params: string }) {
                 </span>
               </div>
             </div>
-            <table className="table-auto w-full text-center font-poppins text-xl ">
+            <table className="table-auto w-full text-center font-poppins text-xl mb-10">
               <thead>
                 <tr className="*:text-2xl cursor-pointer border-b">
                   <th>Nome do Produto</th>
@@ -76,13 +76,12 @@ export default function VendasPage({ params }: { params: string }) {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
-
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
         </>
       )}
     </div>

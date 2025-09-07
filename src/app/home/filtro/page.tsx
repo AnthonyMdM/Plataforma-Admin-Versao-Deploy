@@ -2,6 +2,7 @@
 import React, { useMemo } from "react";
 import { getVendasPorAno } from "../actions";
 import { Vendas } from "@/types/tyeps-global";
+import Link from "next/link";
 
 export default function Venda() {
   const anoAtual = new Date().getFullYear();
@@ -102,7 +103,7 @@ export default function Venda() {
   ];
 
   return (
-    <div className="p-6 bg-white text-black">
+    <div className="p-6 h-[100%] bg-white text-black">
       <h1 className="text-xl font-bold mb-4">
         Vendas ({vendasFiltradas.length} encontrada
         {vendasFiltradas.length !== 1 ? "s" : ""})
@@ -197,12 +198,10 @@ export default function Venda() {
       {!loading && !error && vendasFiltradas.length > 0 && (
         <div className="space-y-2">
           {vendasFiltradas.map((venda) => (
-            <div
-              key={venda.id}
-              className="border border-gray-200 p-4 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex justify-between items-center">
+            <Link href={`/home/filtro/venda/${venda.id}`} key={venda.id}>
+              <div className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center">
                 <span className="font-medium">Venda #{venda.id}</span>
+                <span className="font-medium">Vendedor: {venda.userId}</span>
                 <span className="text-gray-600">
                   {new Date(venda.data).toLocaleDateString("pt-BR", {
                     day: "2-digit",
@@ -211,7 +210,7 @@ export default function Venda() {
                   })}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

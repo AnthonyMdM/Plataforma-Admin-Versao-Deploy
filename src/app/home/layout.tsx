@@ -8,7 +8,7 @@ export default function PrincipalLayout({
   return (
     <div>
       <Header />
-      {children}
+      <div>{children}</div>
     </div>
   );
 }
