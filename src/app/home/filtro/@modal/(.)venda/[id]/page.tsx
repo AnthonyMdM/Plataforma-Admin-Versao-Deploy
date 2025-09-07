@@ -45,7 +45,7 @@ export default function ModalVenda() {
       className="fixed w-full inset-0 bg-black/60 flex items-center justify-center z-50"
       onClick={handleBackdropClick}
     >
-      <div className="relative bg-white p-6 rounded-lg shadow-lg h-[90vh] overflow-y-auto ">
+      <div className="relative bg-white px-6 pt-4 rounded-lg shadow-lg h-[90vh] overflow-y-auto ">
         <button
           onClick={() => router.back()}
           className="absolute top-2 right-2 text-gray-600 hover:text-black text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"

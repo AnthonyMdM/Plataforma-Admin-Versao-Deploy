@@ -8,7 +8,7 @@ import TabelSkeleton from "@/app/componentes/skeleton/TabelSkeleton";
 import Pagination from "@/app/componentes/global/Pagination";
 
 const fetcher = async (id: number, page: number) => {
-  return await getVendas(id, page, 10);
+  return await getVendas(id, page, 9);
 };
 
 export default function VendasPage({ params }: { params: string }) {
@@ -30,7 +30,7 @@ export default function VendasPage({ params }: { params: string }) {
   const totalPages: number = data?.totalPages || 1;
 
   return (
-    <div className="p-6 bg-white text-black h-[100%] items-center gap-4">
+    <div className="p-4 lg:p-1 bg-white text-black h-[100%] items-center gap-4">
       {isLoading && <TabelSkeleton columns={6} lines={6} />}
       {error && <p className="text-red-600">{error}</p>}
 
