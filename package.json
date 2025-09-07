@@ -10,24 +10,14 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
-<<<<<<< HEAD
     "@prisma/client": "^6.14.0",
-=======
-    "@prisma/client": "^6.13.0",
->>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "next": "15.4.5",
     "next-auth": "^5.0.0-beta.29",
-<<<<<<< HEAD
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "swr": "^2.3.6",
-=======
-    "prisma": "^6.13.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
->>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
     "zod": "^4.0.15"
   },
   "devDependencies": {
@@ -39,10 +29,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
-<<<<<<< HEAD
     "prisma": "^6.14.0",
-=======
->>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"

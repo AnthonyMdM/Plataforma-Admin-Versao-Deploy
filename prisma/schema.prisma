@@ -1,10 +1,6 @@
 generator client {
-<<<<<<< HEAD
   provider        = "prisma-client-js"
   previewFeatures = ["views"]
-=======
-  provider = "prisma-client-js"
->>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
 }
 
 datasource db {
@@ -13,7 +9,6 @@ datasource db {
 }
 
 model User {
-<<<<<<< HEAD
   id             Int     @id @default(autoincrement())
   Name           String
   email          String  @unique
@@ -29,28 +24,10 @@ model Venda {
   valor_total   Int?
   user          User            @relation(fields: [userId], references: [id])
   venda_produto venda_produto[]
-=======
-  id             Int      @id @default(autoincrement())
-  Name           String
-  email          String   @unique
-  hashedPassword String
-  Role           String
-  Venda          Venda[]
-}
-
-model Venda {
-  id     Int       @id @default(autoincrement())
-  userId Int
-  data   DateTime
-
-  user   User      @relation(fields: [userId], references: [id])
-  produtos venda_produto[]
->>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
 }
 
 model Produto {
   id             Int             @id @default(autoincrement())
-<<<<<<< HEAD
   nome_produto   String
   unidadePesagem String
   preco          Int
@@ -93,24 +70,4 @@ enum Role {
   ADMINISTRADOR
   DESENVOLVEDOR
   CLIENTE
-=======
-  Nome           String
-  unidadePesagem String
-  preco          Int
-  perecivel      Boolean
-
-  vendas         venda_produto[]
-}
-
-model venda_produto {
-  id                    Int      @id @default(autoincrement())
-  produtoId             Int
-  vendaId               Int
-  quantidade            Int
-  preco_unitario        Int
-  preco_produto_totaltotal Int
-
-  produto               Produto  @relation(fields: [produtoId], references: [id])
-  venda                 Venda    @relation(fields: [vendaId], references: [id])
->>>>>>> 366723b (Começo de um projeto para plataforma de adminstração de vendas)
 }
