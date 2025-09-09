@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
-import { getVendasPorAno } from "../actions";
+import { getVendasPorAno } from "../../../actions/actionsVendas";
 import { Vendas } from "@/types/tyeps-global";
 import Link from "next/link";
 
@@ -104,12 +104,12 @@ export default function Venda() {
 
   return (
     <div className="p-6 h-[100%] bg-white text-black">
-      <h1 className="text-xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mt-2 mb-6">
         Vendas ({vendasFiltradas.length} encontrada
         {vendasFiltradas.length !== 1 ? "s" : ""})
       </h1>
 
-      <div className="flex gap-4 mb-6 flex-wrap">
+      <div className="flex gap-4 text-lg mb-6 flex-wrap">
         <div>
           <label className="block font-medium mb-1">Ano</label>
           <select
@@ -143,8 +143,6 @@ export default function Venda() {
             ))}
           </select>
         </div>
-
-        {/* Filtro Dia */}
         <div>
           <label className="block font-medium mb-1">Dia</label>
           <select

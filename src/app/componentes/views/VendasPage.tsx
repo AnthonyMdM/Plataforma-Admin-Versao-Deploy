@@ -1,14 +1,14 @@
 "use client";
 import { useState, useCallback } from "react";
 import useSWR from "swr";
-import { getVendas } from "@/app/home/actions";
+import { getVendas } from "@/actions/actionsVendas";
 import { vendas_telas } from "@prisma/client";
 
 import TabelSkeleton from "@/app/componentes/skeleton/TabelSkeleton";
 import Pagination from "@/app/componentes/global/Pagination";
 
 const fetcher = async (id: number, page: number) => {
-  return await getVendas(id, page, 9);
+  return await getVendas(id, page, 10);
 };
 
 export default function VendasPage({ params }: { params: string }) {
@@ -30,13 +30,14 @@ export default function VendasPage({ params }: { params: string }) {
   const totalPages: number = data?.totalPages || 1;
 
   return (
-    <div className="p-4 lg:p-1 bg-white text-black h-[100%] items-center gap-4">
+    <div
+      className={`p-4 lg:p-1 bg-white text-black h-[100%] items-center gap-4`}
+    >
       {isLoading && <TabelSkeleton columns={6} lines={6} />}
       {error && <p className="text-red-600">{error}</p>}
 
       {!isLoading && !error && (
         <>
-          {/* Tabela de vendas */}
           <div className="flex-1 overflow-auto">
             <div className="text-3xl font-poppins font-semibold *:flex *:gap-2 flex gap-50 mb-10 mt-5">
               <div>

@@ -1,17 +1,17 @@
 "use client";
 import React from "react";
-import { deleteProduto, getProdutos } from "@/actions/actionsProdutos";
-import { Produto } from "@prisma/client";
+import { produtosVendidos } from "@/actions/actionsProdutos";
+import { ProdutosMaisVendidos } from "@prisma/client";
 import Image from "next/image";
 import TabelSkeleton from "@/app/componentes/skeleton/TabelSkeleton";
 
-type SortKey = keyof Produto;
+type SortKey = keyof ProdutosMaisVendidos;
 
 export default function Page() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [data, setData] = React.useState<Produto[]>([]);
-  const [sortKey, setSortKey] = React.useState<SortKey>("id");
+  const [data, setData] = React.useState<ProdutosMaisVendidos[]>([]);
+  const [sortKey, setSortKey] = React.useState<SortKey>("produtoId");
   const [search, setSearch] = React.useState("");
   const [selected, setSelected] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
@@ -22,7 +22,7 @@ export default function Page() {
     if (search.length === 0) return [];
 
     const uniqueNames = Array.from(
-      data.map((item) => item.nome_produto).filter(Boolean)
+      data.map((item) => item.nome).filter(Boolean)
     );
 
     return uniqueNames.filter((nome) =>
@@ -33,14 +33,14 @@ export default function Page() {
   // Filtra os dados da tabela baseado na seleção
   const filteredData = React.useMemo(() => {
     if (!selected) return data;
-    return data.filter((item) => item.nome_produto === selected);
+    return data.filter((item) => item.nome === selected);
   }, [data, selected]);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const { produtos } = await getProdutos();
+        const { produtos } = await produtosVendidos();
 
         if (produtos.length > 0) {
           setData(produtos);
@@ -93,15 +93,6 @@ export default function Page() {
     }
   };
 
-  const handleDeletItem = async (id: number) => {
-    const { success } = await deleteProduto(id);
-    if (success) {
-      alert("Produto deletado com sucesso!");
-    } else {
-      alert("Produto não deletado!");
-    }
-  };
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
@@ -125,7 +116,7 @@ export default function Page() {
   };
 
   return (
-    <div className="p-6 bg-white h-max text-black ">
+    <div className="p-6 bg-white text-black h-full">
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       {loading && <TabelSkeleton columns={5} lines={5} />}
@@ -188,10 +179,10 @@ export default function Page() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="table-auto w-full h-full text-center font-poppins text-xl ">
+            <table className="table-auto w-full text-center font-poppins text-xl mb-10">
               <thead>
                 <tr className="*:text-2xl cursor-pointer border-b">
-                  <th onClick={() => handleSort("id")}>
+                  <th onClick={() => handleSort("produtoId")}>
                     <div className="flex justify-center items-center gap-1">
                       <span>ID Produto</span>
                       <Image
@@ -202,7 +193,7 @@ export default function Page() {
                       />
                     </div>
                   </th>
-                  <th onClick={() => handleSort("nome_produto")}>
+                  <th onClick={() => handleSort("nome")}>
                     <div className="flex justify-center items-center gap-1">
                       <span>Nome</span>
                       <Image
@@ -213,14 +204,9 @@ export default function Page() {
                       />
                     </div>
                   </th>
-                  <th>
+                  <th onClick={() => handleSort("total_vendido")}>
                     <div className="flex justify-center items-center gap-1">
-                      <span>Unidade</span>
-                    </div>
-                  </th>
-                  <th onClick={() => handleSort("preco")}>
-                    <div className="flex justify-center items-center gap-1">
-                      <span>Preço</span>
+                      <span>Total de Vendas</span>
                       <Image
                         src="/arrows.svg"
                         width={20}
@@ -229,11 +215,27 @@ export default function Page() {
                       />
                     </div>
                   </th>
-                  <th>
-                    <span>Perecível</span>
+                  <th onClick={() => handleSort("unidadePesagem")}>
+                    <div className="flex justify-center items-center gap-1">
+                      <span>Unidade</span>
+                      <Image
+                        src="/arrows.svg"
+                        width={20}
+                        height={20}
+                        alt="seta"
+                      />
+                    </div>
                   </th>
-                  <th>
-                    <span>Excluir</span>
+                  <th onClick={() => handleSort("valor_total")}>
+                    <div className="flex justify-center items-center gap-1">
+                      <span>Valor Total</span>
+                      <Image
+                        src="/arrows.svg"
+                        width={20}
+                        height={20}
+                        alt="seta"
+                      />
+                    </div>
                   </th>
                 </tr>
               </thead>
@@ -241,30 +243,17 @@ export default function Page() {
                 {sortedData.length > 0 ? (
                   sortedData.map((item) => (
                     <tr
-                      key={item.id}
+                      key={item.produtoId}
                       className="border-b hover:bg-gray-50 *:p-3"
                     >
-                      <td>{item.id}</td>
-                      <td>{item.nome_produto?.toUpperCase()}</td>
+                      <td>{item.produtoId}</td>
+                      <td>{item.nome?.toUpperCase()}</td>
+                      <td>{item.total_vendido}</td>
                       <td>{item.unidadePesagem?.toUpperCase()}</td>
-                      <td>R${item.preco / 100}</td>
-                      <td
-                        className={` ${
-                          !item.perecivel ? "bg-red-600" : "bg-green-600"
-                        }`}
-                      >
-                        {item.perecivel ? "TRUE" : "FALSE"}
-                      </td>
-                      <td className="text-center align-middle">
-                        <button onClick={() => handleDeletItem(item.id)}>
-                          <Image
-                            src="/delet.svg"
-                            width={40}
-                            height={40}
-                            alt="Deletar"
-                            className="inline-block hover:scale-110 transition"
-                          />
-                        </button>
+                      <td>
+                        {item.valor_total
+                          ? `R$ ${Number(item.valor_total).toFixed(2)}`
+                          : "-"}
                       </td>
                     </tr>
                   ))

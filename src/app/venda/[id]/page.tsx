@@ -1,5 +1,5 @@
 import VendasPage from "@/app/componentes/views/VendasPage";
-import { getIdVendas } from "@/app/home/actions";
+import { getIdVendas } from "@/actions/actionsVendas";
 
 export async function generateStaticParams() {
   const ids = await getIdVendas();

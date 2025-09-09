@@ -1,0 +1,18 @@
+export const unidades = {
+  Quilo: "kg",
+  Grama: "g",
+  Miligramas: "mg",
+  Litro: "l",
+  Mililitro: "ml",
+  Unidade: "un",
+  Dúzia: "dz",
+  Pacote: "pct",
+  Caixa: "cx",
+  Fardo: "fd",
+  Metro: "mt",
+  Centímetro: "cm",
+  Milímetro: "mm",
+  Par: "par",
+  Kit: "kit",
+  Saco: "sc",
+};

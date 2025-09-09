@@ -1,7 +1,8 @@
 "use client";
 import React, { useRef } from "react";
-import { getVendasPorIntervalo } from "../actions";
+import { getVendasPorIntervalo } from "../../../actions/actionsVendas";
 import { Venda } from "@prisma/client";
+import Link from "next/link";
 
 export default function Vendas() {
   const [date, setDate] = React.useState<Venda[]>([]);
@@ -57,10 +58,8 @@ export default function Vendas() {
         Buscar Vendas por Intervalo de Dates ({date.length} encontradas)
       </h1>
 
-      {/* Inputs de Date na mesma linha */}
       <div className="border border-gray-300 p-4 rounded-lg mb-6">
         <div className="flex gap-6 flex-wrap items-end">
-          {/* Date Início */}
           <div className="flex-1 min-w-[200px]">
             <label className="block font-medium mb-1 text-sm text-green-700">
               📅 Date Início
@@ -73,7 +72,6 @@ export default function Vendas() {
             />
           </div>
 
-          {/* Date Fim */}
           <div className="flex-1 min-w-[200px]">
             <label className="block font-medium mb-1 text-sm text-red-700">
               📅 Date Fim
@@ -135,12 +133,12 @@ export default function Vendas() {
             Vendas encontradas no intervalo ({date.length} resultados):
           </h2>
           {date.map((venda) => (
-            <div
+            <Link
+              href={`/home/intervalo/venda/${venda.id}`}
               key={venda.id}
-              className="border border-gray-200 p-4 rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-4"
             >
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Venda R${venda.valor_total}</span>
+              <div className="flex justify-between items-center px-6 py-5 w-full hover:bg-gray-100 ">
                 <span className="font-medium">Venda R${venda.valor_total}</span>
                 <span className="text-gray-600">
                   {new Date(venda.data).toLocaleDateString("pt-BR", {
@@ -151,7 +149,7 @@ export default function Vendas() {
                   })}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

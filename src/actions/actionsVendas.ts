@@ -29,14 +29,6 @@ export async function getVendasPorIntervalo(data1: Date, data2: Date) {
   return { vendas };
 }
 
-export async function produtosVendidos() {
-  const produtos = await prisma.produtosMaisVendidos.findMany({
-    orderBy: {
-      nome: "asc",
-    },
-  });
-  return { produtos };
-}
 export async function getVendas(idVendas: number, page: number, pageSize = 5) {
   const vendas = await prisma.vendas_telas.findMany({
     skip: (page - 1) * pageSize,
