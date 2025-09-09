@@ -1,9 +1,8 @@
 "use client";
 import { createProduto } from "@/actions/actionsProdutos";
-import { unidades } from "@/app/componentes/resumo/resumo";
+import { unidades } from "@/app/componentes/produto/produto";
 import { useActionState, useState } from "react";
 
-// 🚀 VERSÃO MELHORADA COM MAIS FUNCIONALIDADES
 export default function page() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
@@ -18,24 +17,20 @@ export default function page() {
     label.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Reset form após sucesso
   const resetForm = () => {
     setSearch("");
     setSelected("");
     setOpen(false);
-    // Reset dos campos do form
     const form = document.querySelector("form") as HTMLFormElement;
     if (form) form.reset();
   };
 
-  // Função para lidar com seleção de unidade
   const handleUnitSelect = (label: string, value: string) => {
     setSelected(value);
     setSearch(label);
     setOpen(false);
   };
 
-  // Função para limpar seleção
   const clearSelection = () => {
     setSelected("");
     setSearch("");
@@ -76,7 +71,6 @@ export default function page() {
                 onChange={(e) => {
                   setSearch(e.target.value);
                   setOpen(true);
-                  // Limpa seleção se o usuário digitar algo diferente
                   if (selected) {
                     const selectedLabel = Object.entries(unidades).find(
                       ([, v]) => v === selected
@@ -94,8 +88,6 @@ export default function page() {
                 className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-
-              {/* Botão para limpar */}
               {(search || selected) && (
                 <button
                   type="button"
@@ -106,13 +98,10 @@ export default function page() {
                 </button>
               )}
             </div>
-
-            {/* Campo hidden para enviar valor correto */}
             {selected && (
               <input type="hidden" name="unidade_value" value={selected} />
             )}
 
-            {/* Dropdown de opções */}
             {open && (
               <ul className="border rounded max-h-40 overflow-y-auto absolute top-full left-0 right-0 bg-white z-10 shadow-lg">
                 {search.length > 0 ? (
@@ -213,7 +202,6 @@ export default function page() {
         </div>
       </form>
 
-      {/* Estados do formulário */}
       <div className="ml-5 mt-4">
         {state.success && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
