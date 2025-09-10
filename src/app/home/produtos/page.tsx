@@ -4,6 +4,7 @@ import { deleteProduto, getProdutos } from "@/actions/actionsProdutos";
 import { Produto } from "@prisma/client";
 import Image from "next/image";
 import TabelSkeleton from "@/app/componentes/skeleton/TabelSkeleton";
+import { formatCurrency } from "@/app/componentes/global/formatePreco";
 
 type SortKey = keyof Produto;
 
@@ -17,7 +18,6 @@ export default function Page() {
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [showSuggestions, setShowSuggestions] = React.useState(false);
 
-  // Filtra produtos únicos pelos nomes
   const filteredProducts = React.useMemo(() => {
     if (search.length === 0) return [];
 
@@ -30,7 +30,6 @@ export default function Page() {
     );
   }, [data, search]);
 
-  // Filtra os dados da tabela baseado na seleção
   const filteredData = React.useMemo(() => {
     if (!selected) return data;
     return data.filter((item) => item.nome_produto === selected);
@@ -125,7 +124,8 @@ export default function Page() {
   };
 
   return (
-    <div className="p-6 bg-white h-max text-black ">
+    <div className="px-6 bg-white h-max text-black ">
+      <h1 className="titulo pt-5 mb-2">Produtos</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       {loading && <TabelSkeleton columns={5} lines={5} />}
@@ -188,11 +188,11 @@ export default function Page() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="table-auto w-full h-full text-center font-poppins text-xl ">
+            <table className="table-base">
               <thead>
-                <tr className="*:text-2xl cursor-pointer border-b">
+                <tr>
                   <th onClick={() => handleSort("id")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>ID Produto</span>
                       <Image
                         src="/arrows.svg"
@@ -203,7 +203,7 @@ export default function Page() {
                     </div>
                   </th>
                   <th onClick={() => handleSort("nome_produto")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Nome</span>
                       <Image
                         src="/arrows.svg"
@@ -214,12 +214,12 @@ export default function Page() {
                     </div>
                   </th>
                   <th>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Unidade</span>
                     </div>
                   </th>
                   <th onClick={() => handleSort("preco")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Preço</span>
                       <Image
                         src="/arrows.svg"
@@ -247,7 +247,7 @@ export default function Page() {
                       <td>{item.id}</td>
                       <td>{item.nome_produto?.toUpperCase()}</td>
                       <td>{item.unidadePesagem?.toUpperCase()}</td>
-                      <td>R${item.preco / 100}</td>
+                      <td>{formatCurrency(item.preco)}</td>
                       <td
                         className={` ${
                           !item.perecivel ? "bg-red-600" : "bg-green-600"
@@ -255,14 +255,19 @@ export default function Page() {
                       >
                         {item.perecivel ? "TRUE" : "FALSE"}
                       </td>
-                      <td className="text-center align-middle">
-                        <button onClick={() => handleDeletItem(item.id)}>
+                      <td>
+                        <button
+                          onClick={() => {
+                            handleDeletItem(item.id);
+                          }}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src="/delet.svg"
                             width={40}
                             height={40}
                             alt="Deletar"
-                            className="inline-block hover:scale-110 transition"
+                            className="inline-block hover:scale-110 transition curso-pointer"
                           />
                         </button>
                       </td>

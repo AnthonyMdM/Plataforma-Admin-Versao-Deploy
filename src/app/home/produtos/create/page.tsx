@@ -3,7 +3,7 @@ import { createProduto } from "@/actions/actionsProdutos";
 import { unidades } from "@/app/componentes/produto/produto";
 import { useActionState, useState } from "react";
 
-export default function page() {
+export default function PageCreate() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
   const [open, setOpen] = useState(false);
@@ -37,12 +37,13 @@ export default function page() {
   };
 
   return (
-    <div className="w-full h-full bg-white text-black">
+    <div className="w-full h-full bg-gray-50 text-black">
+      <h1 className="titulo pl-5 pt-5">Criar Produto:</h1>
       <form
-        className="ml-5 pt-5 flex flex-col gap-4 font-poppins"
+        className="ml-8 pt-4 flex flex-col gap-4 font-poppins"
         action={formAction}
       >
-        <div className="flex items-baseline gap-4 flex-wrap">
+        <div className="flex items-baseline gap-4 flex-wrap [&_div]:[&_label]:text-xl">
           <div className="flex flex-col gap-1 min-w-[200px]">
             <label htmlFor="nome" className="font-medium">
               Nome do Produto:

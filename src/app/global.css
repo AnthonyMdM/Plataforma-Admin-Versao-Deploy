@@ -28,6 +28,26 @@ input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
 
+.titulo {
+  @apply text-4xl font-poppins font-semibold;
+}
+
+.table-base {
+  @apply table-auto w-full h-full text-center font-poppins text-xl;
+}
+
+.table-base thead tr th div {
+  @apply flex justify-center items-center gap-1;
+}
+
+.table-base thead tr {
+  @apply *:text-4xl cursor-pointer border-b;
+}
+
+.table-base tbody tr {
+  @apply border-b hover:bg-gray-50 *:p-3;
+}
+
 html,
 body {
   background: var(--background);

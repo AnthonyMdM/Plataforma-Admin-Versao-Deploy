@@ -116,13 +116,14 @@ export default function Page() {
   };
 
   return (
-    <div className="p-6 bg-white text-black h-full">
+    <div className="p-6 bg-white text-black h-full overflow-x-auto">
+      <h1 className="titulo">Vendas por Produto</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       {loading && <TabelSkeleton columns={5} lines={5} />}
 
-      <div className="flex flex-col gap-2 relative w-full max-w-md mb-4">
-        <label className="block font-medium">Buscar Produto:</label>
+      <div className="flex my-2 flex-col gap-2 relative w-full max-w-md mb-4">
+        <label className="block font-medium">Buscar por Nome:</label>
         <div className="flex gap-2">
           <input
             type="text"
@@ -179,11 +180,11 @@ export default function Page() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="table-auto w-full text-center font-poppins text-xl mb-10">
+            <table className="table-base">
               <thead>
-                <tr className="*:text-2xl cursor-pointer border-b">
+                <tr>
                   <th onClick={() => handleSort("produtoId")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>ID Produto</span>
                       <Image
                         src="/arrows.svg"
@@ -194,7 +195,7 @@ export default function Page() {
                     </div>
                   </th>
                   <th onClick={() => handleSort("nome")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Nome</span>
                       <Image
                         src="/arrows.svg"
@@ -205,7 +206,7 @@ export default function Page() {
                     </div>
                   </th>
                   <th onClick={() => handleSort("total_vendido")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Total de Vendas</span>
                       <Image
                         src="/arrows.svg"
@@ -216,7 +217,7 @@ export default function Page() {
                     </div>
                   </th>
                   <th onClick={() => handleSort("unidadePesagem")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Unidade</span>
                       <Image
                         src="/arrows.svg"
@@ -227,7 +228,7 @@ export default function Page() {
                     </div>
                   </th>
                   <th onClick={() => handleSort("valor_total")}>
-                    <div className="flex justify-center items-center gap-1">
+                    <div>
                       <span>Valor Total</span>
                       <Image
                         src="/arrows.svg"

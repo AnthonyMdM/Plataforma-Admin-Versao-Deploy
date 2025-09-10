@@ -6,6 +6,7 @@ import { vendas_telas } from "@prisma/client";
 
 import TabelSkeleton from "@/app/componentes/skeleton/TabelSkeleton";
 import Pagination from "@/app/componentes/global/Pagination";
+import { formatCurrency } from "../global/formatePreco";
 
 const fetcher = async (id: number, page: number) => {
   return await getVendas(id, page, 10);
@@ -38,8 +39,8 @@ export default function VendasPage({ params }: { params: string }) {
 
       {!isLoading && !error && (
         <>
-          <div className="flex-1 overflow-auto">
-            <div className="text-3xl font-poppins font-semibold *:flex *:gap-2 flex gap-50 mb-10 mt-5">
+          <div className="flex flex-col items-center overflow-auto">
+            <div className="text-2xl xl:text-4xl font-poppins *:text-center *:items-center flex-col xl:flex-row font-semibold *:flex *:flex-col xl:*:flex-row xl:*:gap-2 flex gap-4 xl:gap-50 xl:mb-10 xl:mt-5">
               <div>
                 <p>Nome do Vendedor:</p>
                 <span>{vendas[0]?.Name || "-"}</span>
@@ -53,30 +54,54 @@ export default function VendasPage({ params }: { params: string }) {
                 </span>
               </div>
             </div>
-            <table className="table-auto w-full text-center font-poppins text-xl mb-10">
-              <thead>
-                <tr className="*:text-2xl cursor-pointer border-b">
-                  <th>Nome do Produto</th>
-                  <th>Unid.</th>
-                  <th>Preço</th>
-                  <th>Quantidade</th>
-                  <th>Valor Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vendas.map((item, i) => (
-                  <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="py-2">{item.nome_produto}</td>
-                    <td className="py-2">
-                      {item?.unidadePesagem?.toUpperCase()}
-                    </td>
-                    <td className="py-2">{item.preco}</td>
-                    <td className="py-2">{item.quantidade}</td>
-                    <td className="py-2">{item.preco_produto_totaltotal}</td>
+            <div className="hidden xl:block overflow-x-auto">
+              <table className="table-base">
+                <thead>
+                  <tr>
+                    <th>Nome do Produto</th>
+                    <th>Unid.</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Valor Total</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {vendas.map((item, i) => (
+                    <tr key={i}>
+                      <td>{item.nome_produto}</td>
+                      <td>{item?.unidadePesagem?.toUpperCase()}</td>
+                      <td>{item.preco}</td>
+                      <td>{item.quantidade}</td>
+                      <td>{item.preco_produto_totaltotal}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex flex-col w-full text-center gap-4 xl:hidden mt-6">
+              {vendas.map((item, i) => (
+                <div key={i} className="border rounded p-3 shadow-sm">
+                  <p>
+                    <strong>Produto:</strong> {item.nome_produto}
+                  </p>
+                  <p>
+                    <strong>Unid.:</strong>{" "}
+                    {item?.unidadePesagem?.toUpperCase()}
+                  </p>
+                  <p>
+                    <strong>Preço:</strong> {formatCurrency(item.preco ?? 0)}
+                  </p>
+                  <p>
+                    <strong>Quantidade:</strong> {item.quantidade}
+                  </p>
+                  <p>
+                    <strong>Total:</strong>{" "}
+                    {formatCurrency(item.preco_produto_totaltotal ?? 0)}
+                  </p>
+                </div>
+              ))}
+            </div>
+
             <Pagination
               currentPage={page}
               totalPages={totalPages}

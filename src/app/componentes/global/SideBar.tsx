@@ -5,50 +5,42 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function SideBar() {
-  const [menu, setMenu] = useState(false);
+  const [menu, setMenu] = useState(true);
   return (
-    <div className="bg-amber-950 h-screen text-white relative">
+    <div className="bg-amber-950 xl:w-max h-screen text-white relative transition-all">
       {menu ? (
-        <div className="flex flex-col items-center gap-5 mt-2">
+        <div className="flex flex-col items-center gap-2">
           <button
             onClick={() => setMenu(!menu)}
-            className="cursor-pointer mx-3 mt-4"
+            className="cursor-pointer xl:mx-2 mt-4 flex items-center justify-center xl:w-14 xl:h-14 rounded-full hover:bg-black transition-colors"
           >
-            <Image
-              src="/menu.svg"
-              alt="Fechar menu"
-              width={40}
-              height={40}
-              className="w-10 h-10 hover:opacity-75 transition-opacity "
-            />
+            <Image src="/menu.svg" alt="Fechar menu" width={40} height={40} />
           </button>
-          <Link href={"/home"}>
-            <Image
-              src="/home.svg"
-              alt="Fechar menu"
-              width={40}
-              height={40}
-              className="w-10 h-10 hover:opacity-75 transition-opacity "
-            />
+
+          <Link
+            href={"/home"}
+            className="cursor-pointer mx-2 flex items-center justify-center xl:w-14 xl:h-14 rounded-full hover:bg-black transition-colors"
+          >
+            <Image src="/home.svg" alt="Fechar menu" width={40} height={40} />
           </Link>
         </div>
       ) : (
         <button
           onClick={() => setMenu(!menu)}
-          className="absolute top-4 left-3 cursor-pointer"
+          className="absolute top-70 xl:top-4 left-3 cursor-pointer"
         >
           <Image
             src="/arrow_back.svg"
             alt="Fechar menu"
             width={35}
             height={35}
-            className="hover:opacity-75 transition-opacity brightness-0 invert"
+            className=" hover:opacity-75 transition-opacity brightness-0 invert"
           />
         </button>
       )}
 
       <ul
-        className={` w-50 flex flex-col gap-3 mt-4 items-center [&_li]:[&_a]:cursor-pointer [&_li]:[&_a]:py-1 [&_li]:[&_a]:px-4 [&_li]:[&_a]:rounded [&_li]:[&_a]:hover:bg-black font-poppins text-white text-center text-lg  ${
+        className={`w-25 xl:w-50 flex flex-col gap-3 mt-2 xl:mt-4 items-center px-2 xl:px-0 [&_li]:[&_a]:cursor-pointer [&_li]:[&_a]:py-1 xl:[&_li]:[&_a]:px-4 [&_li]:[&_a]:rounded [&_li]:[&_a]:hover:bg-black font-poppins text-white text-center text-lg ${
           menu ? "hidden" : "block"
         }`}
       >
