@@ -41,7 +41,7 @@ input[type="number"] {
 }
 
 .table-base thead tr {
-  @apply *:text-4xl cursor-pointer border-b;
+  @apply *:text-3xl cursor-pointer border-b;
 }
 
 .table-base tbody tr {

@@ -47,7 +47,7 @@ export default function Pagination({
   const isLastPage = currentPage === lastPage;
 
   return (
-    <div className="flex items-center justify-center space-x-2 mt-4">
+    <div className="flex items-center justify-center space-x-2 mt-4 mb-5">
       <button
         className={`px-3 py-2 rounded-md transition-colors ${
           isFirstPage

@@ -29,18 +29,22 @@ export default function VendasPage({ params }: { params: string }) {
 
   const vendas: vendas_telas[] = data?.vendas || [];
   const totalPages: number = data?.totalPages || 1;
+  const somaTotal = vendas.reduce(
+    (acc, item) => acc + (item.preco_produto_totaltotal ?? 0),
+    0
+  );
 
   return (
     <div
-      className={`p-4 lg:p-1 bg-white text-black h-[100%] items-center gap-4`}
+      className={`px-4 py-2 sm:px-1 lg:py-1 bg-white text-black h-[100%] items-center gap-4`}
     >
       {isLoading && <TabelSkeleton columns={6} lines={6} />}
       {error && <p className="text-red-600">{error}</p>}
 
       {!isLoading && !error && (
         <>
-          <div className="flex flex-col items-center overflow-auto">
-            <div className="text-2xl xl:text-4xl font-poppins *:text-center *:items-center flex-col xl:flex-row font-semibold *:flex *:flex-col xl:*:flex-row xl:*:gap-2 flex gap-4 xl:gap-50 xl:mb-10 xl:mt-5">
+          <div className="flex flex-col items-center overflow-auto ">
+            <div className="text-2xl xl:text-3xl font-poppins *:text-center *:items-center flex-col lg:flex-row font-semibold *:flex *:flex-col lg:flex-wrap lg:*:gap-2 flex gap-4 lg:gap-20 lg:mb-10 lg:mt-5 justify-center">
               <div>
                 <p>Nome do Vendedor:</p>
                 <span>{vendas[0]?.Name || "-"}</span>
@@ -53,8 +57,14 @@ export default function VendasPage({ params }: { params: string }) {
                     : "-"}
                 </span>
               </div>
+              <div>
+                <p>Valor Total da Venda:</p>
+                <span>
+                  <p>{formatCurrency(somaTotal)}</p>
+                </span>
+              </div>
             </div>
-            <div className="hidden xl:block overflow-x-auto">
+            <div className="hidden lg:block overflow-x-auto w-full">
               <table className="table-base">
                 <thead>
                   <tr>
@@ -78,7 +88,7 @@ export default function VendasPage({ params }: { params: string }) {
                 </tbody>
               </table>
             </div>
-            <div className="flex flex-col w-full text-center gap-4 xl:hidden mt-6">
+            <div className="flex flex-col w-full text-center gap-4 lg:hidden mt-6">
               {vendas.map((item, i) => (
                 <div key={i} className="border rounded p-3 shadow-sm">
                   <p>

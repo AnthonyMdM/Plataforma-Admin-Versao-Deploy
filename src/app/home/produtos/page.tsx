@@ -13,27 +13,27 @@ export default function Page() {
   const [error, setError] = React.useState<string | null>(null);
   const [data, setData] = React.useState<Produto[]>([]);
   const [sortKey, setSortKey] = React.useState<SortKey>("id");
-  const [search, setSearch] = React.useState("");
-  const [selected, setSelected] = React.useState("");
+  const [searchProduto, setSearchProduto] = React.useState("");
+  const [selectedProduto, setSelectedProduto] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [showSuggestions, setShowSuggestions] = React.useState(false);
 
   const filteredProducts = React.useMemo(() => {
-    if (search.length === 0) return [];
+    if (searchProduto.length === 0) return [];
 
     const uniqueNames = Array.from(
       data.map((item) => item.nome_produto).filter(Boolean)
     );
 
     return uniqueNames.filter((nome) =>
-      nome!.toLowerCase().includes(search.toLowerCase())
+      nome!.toLowerCase().includes(searchProduto.toLowerCase())
     );
-  }, [data, search]);
+  }, [data, searchProduto]);
 
   const filteredData = React.useMemo(() => {
-    if (!selected) return data;
-    return data.filter((item) => item.nome_produto === selected);
-  }, [data, selected]);
+    if (!selectedProduto) return data;
+    return data.filter((item) => item.nome_produto === selectedProduto);
+  }, [data, selectedProduto]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -103,23 +103,23 @@ export default function Page() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearch(value);
+    setSearchProduto(value);
     setShowSuggestions(value.length > 0);
 
     if (value.length === 0) {
-      setSelected("");
+      setSelectedProduto("");
     }
   };
 
   const handleProductSelect = (productName: string) => {
-    setSelected(productName);
-    setSearch(productName);
+    setSelectedProduto(productName);
+    setSearchProduto(productName);
     setShowSuggestions(false);
   };
 
-  const clearSelection = () => {
-    setSelected("");
-    setSearch("");
+  const clearSelectionProduto = () => {
+    setSelectedProduto("");
+    setSearchProduto("");
     setShowSuggestions(false);
   };
 
@@ -128,23 +128,27 @@ export default function Page() {
       <h1 className="titulo pt-5 mb-2">Produtos</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
-      {loading && <TabelSkeleton columns={5} lines={5} />}
+      {loading && (
+        <div className="hidden xl:block overflow-x-auto">
+          <TabelSkeleton columns={5} lines={5} />
+        </div>
+      )}
 
       <div className="flex flex-col gap-2 relative w-full max-w-md mb-4">
         <label className="block font-medium">Buscar Produto:</label>
         <div className="flex gap-2">
           <input
             type="text"
-            value={search}
+            value={searchProduto}
             onChange={handleSearchChange}
-            onFocus={() => setShowSuggestions(search.length > 0)}
+            onFocus={() => setShowSuggestions(searchProduto.length > 0)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             placeholder="Digite o nome do produto..."
             className="border rounded p-2 flex-1"
           />
-          {selected && (
+          {selectedProduto && (
             <button
-              onClick={clearSelection}
+              onClick={clearSelectionProduto}
               className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
             >
               Limpar
@@ -159,7 +163,7 @@ export default function Page() {
                 key={nome}
                 onMouseDown={() => handleProductSelect(nome!)}
                 className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                  selected === nome ? "bg-gray-300" : ""
+                  selectedProduto === nome ? "bg-gray-300" : ""
                 }`}
               >
                 {nome}
@@ -168,13 +172,13 @@ export default function Page() {
           </ul>
         )}
 
-        {selected && (
+        {selectedProduto && (
           <p className="text-sm text-green-600">
-            Produto selecionado: <b>{selected}</b>
+            Produto selecionado: <b>{selectedProduto}</b>
           </p>
         )}
 
-        {search.length > 0 && filteredProducts.length === 0 && (
+        {searchProduto.length > 0 && filteredProducts.length === 0 && (
           <p className="text-sm text-gray-500">
             Nenhum produto encontrado com este nome
           </p>
@@ -187,7 +191,7 @@ export default function Page() {
             Mostrando {sortedData.length} de {data.length} produtos
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="hidden xl:block overflow-x-auto  pb-5">
             <table className="table-base">
               <thead>
                 <tr>
@@ -276,7 +280,7 @@ export default function Page() {
                 ) : (
                   <tr>
                     <td colSpan={5} className="p-8 text-gray-500">
-                      {selected
+                      {selectedProduto
                         ? "Nenhum produto encontrado com este filtro"
                         : "Nenhum produto disponível"}
                     </td>
@@ -284,6 +288,44 @@ export default function Page() {
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="flex flex-col w-full text-center gap-4 xl:hidden mt-6 pb-5">
+            {sortedData.map((item) => (
+              <div key={item.id} className="border rounded p-3 shadow-sm">
+                <p>
+                  <strong>Produto:</strong> {item.nome_produto}
+                </p>
+                <p>
+                  <strong>Unid.: </strong> {item?.unidadePesagem?.toUpperCase()}
+                </p>
+                <p>
+                  <strong>Preço:</strong> {formatCurrency(item.preco ?? 0)}
+                </p>
+                <p>
+                  <strong>Perecível: </strong>
+                  {item.perecivel ? "TRUE" : "FALSE"}
+                </p>
+                <p>
+                  <strong>Total:</strong> {formatCurrency(item.preco)}
+                </p>
+                <p>
+                  <button
+                    onClick={() => {
+                      handleDeletItem(item.id);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Image
+                      src="/delet.svg"
+                      width={30}
+                      height={30}
+                      alt="Deletar"
+                      className="inline-block hover:scale-110 transition mt-3 curso-pointer"
+                    />
+                  </button>
+                </p>
+              </div>
+            ))}
           </div>
         </>
       )}

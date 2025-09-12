@@ -19,7 +19,6 @@ export default function Vendas() {
     const dateInicioValue = dateInicioValueRef.current.value;
     const dateFimValue = dateFimValueRef.current.value;
 
-    // Validação: pelo menos uma date deve ser preenchida
     if (!dateInicioValue || !dateFimValue) {
       setError("Selecione as datas");
       return;
@@ -54,15 +53,15 @@ export default function Vendas() {
 
   return (
     <div className="p-6 bg-white text-black">
-      <h1 className="text-xl font-bold mb-4">
-        Buscar Vendas por Intervalo de Dates ({date.length} encontradas)
+      <h1 className="titulo mb-4 md:mb-10">
+        Buscar Vendas por Intervalo de Datas: ({date.length} encontradas)
       </h1>
 
       <div className="border border-gray-300 p-4 rounded-lg mb-6">
         <div className="flex gap-6 flex-wrap items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="block font-medium mb-1 text-sm text-green-700">
-              📅 Date Início
+            <label className="block font-medium mb-1 text-sm text-green-700 lg:text-lg">
+              Date Início
             </label>
             <input
               ref={dateInicioValueRef}
@@ -73,8 +72,8 @@ export default function Vendas() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block font-medium mb-1 text-sm text-red-700">
-              📅 Date Fim
+            <label className="block font-medium mb-1 text-sm lg:text-lg text-red-700">
+              Date Fim
             </label>
             <input
               ref={dateFimValueRef}
@@ -85,34 +84,16 @@ export default function Vendas() {
           </div>
         </div>
       </div>
-
-      {/* Botões de Ação */}
       <div className="flex gap-4 mb-6">
         <button
           onClick={handleBuscarPorIntervalo}
           disabled={loading}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors font-medium shadow-md"
+          className="py-2 text:lg md:px-3 md:py-4 text-sm md:text-lg bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors  shadow-md md:w-30 md:h-15 w-15 h-15 font-semibold"
         >
-          {loading ? "Buscando..." : "🔍 Buscar por Intervalo"}
-        </button>
-
-        <button
-          onClick={() => {
-            // Reset todos os campos
-            if (dateInicioValueRef.current)
-              dateInicioValueRef.current.value = "";
-            if (dateFimValueRef.current) dateFimValueRef.current.value = "";
-
-            setDate([]);
-            setError(null);
-          }}
-          className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium shadow-md"
-        >
-          🔄 Limpar Filtros
+          {loading ? "Buscando..." : "Buscar"}
         </button>
       </div>
 
-      {/* Estados de loading/error */}
       {loading && (
         <div className="flex items-center gap-2 text-blue-600 mb-4">
           <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
@@ -126,7 +107,6 @@ export default function Vendas() {
         </div>
       )}
 
-      {/* Lista de vendas */}
       {!loading && !error && date.length > 0 && (
         <div className="space-y-2">
           <h2 className="font-medium text-gray-700">
@@ -139,7 +119,7 @@ export default function Vendas() {
               className="p-4"
             >
               <div className="flex justify-between items-center px-6 py-5 w-full hover:bg-gray-100 ">
-                <span className="font-medium">Venda R${venda.valor_total}</span>
+                <span className="font-medium">Venda #{venda.id}</span>
                 <span className="text-gray-600">
                   {new Date(venda.data).toLocaleDateString("pt-BR", {
                     day: "2-digit",

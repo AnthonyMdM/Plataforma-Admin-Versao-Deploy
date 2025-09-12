@@ -7,19 +7,19 @@ import { useState } from "react";
 export default function SideBar() {
   const [menu, setMenu] = useState(true);
   return (
-    <div className="bg-amber-950 xl:w-max h-screen text-white relative transition-all">
+    <div className="bg-amber-950 lg:w-max h-screen text-white relative transition-all">
       {menu ? (
         <div className="flex flex-col items-center gap-2">
           <button
             onClick={() => setMenu(!menu)}
-            className="cursor-pointer xl:mx-2 mt-4 flex items-center justify-center xl:w-14 xl:h-14 rounded-full hover:bg-black transition-colors"
+            className="cursor-pointer lg:mx-2 mt-4 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
           >
             <Image src="/menu.svg" alt="Fechar menu" width={40} height={40} />
           </button>
 
           <Link
             href={"/home"}
-            className="cursor-pointer mx-2 flex items-center justify-center xl:w-14 xl:h-14 rounded-full hover:bg-black transition-colors"
+            className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
           >
             <Image src="/home.svg" alt="Fechar menu" width={40} height={40} />
           </Link>
@@ -27,7 +27,7 @@ export default function SideBar() {
       ) : (
         <button
           onClick={() => setMenu(!menu)}
-          className="absolute top-70 xl:top-4 left-3 cursor-pointer"
+          className="absolute top-70 lg:top-4 left-3 cursor-pointer"
         >
           <Image
             src="/arrow_back.svg"
@@ -40,7 +40,7 @@ export default function SideBar() {
       )}
 
       <ul
-        className={`w-25 xl:w-50 flex flex-col gap-3 mt-2 xl:mt-4 items-center px-2 xl:px-0 [&_li]:[&_a]:cursor-pointer [&_li]:[&_a]:py-1 xl:[&_li]:[&_a]:px-4 [&_li]:[&_a]:rounded [&_li]:[&_a]:hover:bg-black font-poppins text-white text-center text-lg ${
+        className={`w-25 lg:w-50 flex flex-col gap-3 mt-2 lg:mt-4 items-center px-2 lg:px-0 [&_li]:[&_a]:cursor-pointer [&_li]:[&_a]:py-1 lg:[&_li]:[&_a]:px-4 [&_li]:[&_a]:rounded [&_li]:[&_a]:hover:bg-black font-poppins text-white text-center text-lg ${
           menu ? "hidden" : "block"
         }`}
       >

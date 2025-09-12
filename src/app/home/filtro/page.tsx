@@ -103,8 +103,8 @@ export default function Venda() {
   ];
 
   return (
-    <div className=" p-4 xl:p-6 h-[100%] bg-white text-black">
-      <h1 className="text-2xl font-bold xl:mt-2 mb-6">
+    <div className=" p-4 lg:p-6 h-[100%] bg-white text-black">
+      <h1 className="titulo lg:mt-2 mb-6">
         Vendas ({vendasFiltradas.length} encontrada
         {vendasFiltradas.length !== 1 ? "s" : ""})
       </h1>
@@ -199,7 +199,7 @@ export default function Venda() {
             <Link href={`/home/filtro/venda/${venda.id}`} key={venda.id}>
               <div className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center">
                 <span className="font-medium">Venda #{venda.id}</span>
-                <span className="font-medium hidden xl:block">Vendedor: {venda.userId}</span>
+                <span className="font-medium hidden lg:block">Vendedor: {venda.userId}</span>
                 <span className="text-gray-600">
                   {new Date(venda.data).toLocaleDateString("pt-BR", {
                     day: "2-digit",

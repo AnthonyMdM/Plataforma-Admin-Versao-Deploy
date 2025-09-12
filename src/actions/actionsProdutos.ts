@@ -22,7 +22,6 @@ export async function createProduto(
   formData: FormData
 ) {
   try {
-    // Extrair e converter dados
     const rawData = {
       nome_produto: formData.get("nome") as string,
       preco: parseFloat(formData.get("preco") as string) || 0,
