@@ -103,124 +103,135 @@ export default function Venda() {
   ];
 
   return (
-    <div className=" p-4 lg:p-6 h-[100%] bg-white text-black">
-      <h1 className="titulo lg:mt-2 mb-6">
-        Vendas ({vendasFiltradas.length} encontrada
-        {vendasFiltradas.length !== 1 ? "s" : ""})
-      </h1>
+    <section className="px-6 bg-gray-100 overflow-auto h-full text-black flex justify-center">
+      <div className="bg-white px-6 my-5 rounded-2xl shadow-md w-auto lg:w-[95%] h-max">
+        <h1 className="titulo lg:mt-2 mb-2 md:mb-6 flex flex-col md:flex-row items-baseline gap-1 pt-5">
+          Vendas
+          <span className="md:text-xl text-sm">
+            ({vendasFiltradas.length} encontrada
+            {vendasFiltradas.length !== 1 ? "s" : ""})
+          </span>
+        </h1>
 
-      <div className="flex gap-4 text-lg mb-6 flex-wrap">
-        <div>
-          <label className="block font-medium mb-1">Ano</label>
-          <select
-            value={ano}
-            onChange={(e) => handleAno(Number(e.target.value))}
-            className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {anosDisponiveis.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-medium mb-1">Mês</label>
-          <select
-            value={mes ?? ""}
-            onChange={(e) =>
-              handleMes(e.target.value ? Number(e.target.value) : null)
-            }
-            className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={opcoesFiltro.meses.length === 0}
-          >
-            <option value="">Todos os meses</option>
-            {opcoesFiltro.meses.map((m) => (
-              <option key={m} value={m}>
-                {nomesMeses[m - 1]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block font-medium mb-1">Dia</label>
-          <select
-            value={dia ?? ""}
-            onChange={(e) =>
-              setDia(e.target.value ? Number(e.target.value) : null)
-            }
-            className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={!mes || opcoesFiltro.diasDoMes.length === 0}
-          >
-            <option value="">Todos os dias</option>
-            {opcoesFiltro.diasDoMes.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Botão limpar filtros */}
-        {(mes || dia) && (
-          <div className="flex items-end">
-            <button
-              onClick={() => {
-                setMes(null);
-                setDia(null);
-              }}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+        <div className="flex gap-4 text-lg mb-6 flex-wrap">
+          <div>
+            <label className="block font-medium mb-1">Ano</label>
+            <select
+              value={ano}
+              onChange={(e) => handleAno(Number(e.target.value))}
+              disabled={loading}
+              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              Limpar filtros
-            </button>
+              {anosDisponiveis.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Mês</label>
+            <select
+              value={mes ?? ""}
+              onChange={(e) =>
+                handleMes(e.target.value ? Number(e.target.value) : null)
+              }
+              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={opcoesFiltro.meses.length === 0}
+            >
+              <option value="">Todos os meses</option>
+              {opcoesFiltro.meses.map((m) => (
+                <option key={m} value={m}>
+                  {nomesMeses[m - 1]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block font-medium mb-1">Dia</label>
+            <select
+              value={dia ?? ""}
+              onChange={(e) =>
+                setDia(e.target.value ? Number(e.target.value) : null)
+              }
+              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={!mes || opcoesFiltro.diasDoMes.length === 0}
+            >
+              <option value="">Todos os dias</option>
+              {opcoesFiltro.diasDoMes.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Botão limpar filtros */}
+          {(mes || dia) && (
+            <div className="flex items-end">
+              <button
+                onClick={() => {
+                  setMes(null);
+                  setDia(null);
+                }}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                Limpar filtros
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Estados de loading/error */}
+        {loading && (
+          <div className="flex items-center gap-2 text-blue-600">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+            Carregando...
           </div>
         )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        {/* Lista de vendas */}
+        {!loading && !error && vendasFiltradas.length > 0 && (
+          <ul className=" *:border-b-1 [&>*:last-child]:border-b-0">
+            {vendasFiltradas.map((venda) => (
+              <li key={venda.id}>
+                <Link
+                  href={`/home/venda/${venda.id}`}
+                  className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center "
+                >
+                  <span className="font-medium">Venda #{venda.id}</span>
+                  <span className="font-medium hidden lg:block">
+                    Vendedor: {venda.userId}
+                  </span>
+                  <span className="text-gray-600">
+                    {new Date(venda.data).toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {!loading &&
+          !error &&
+          vendasFiltradas.length === 0 &&
+          data.length > 0 && (
+            <div className="text-center text-gray-600 py-8">
+              Nenhuma venda encontrada com os filtros aplicados
+            </div>
+          )}
       </div>
-
-      {/* Estados de loading/error */}
-      {loading && (
-        <div className="flex items-center gap-2 text-blue-600">
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
-          Carregando...
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      {/* Lista de vendas */}
-      {!loading && !error && vendasFiltradas.length > 0 && (
-        <div className="space-y-2">
-          {vendasFiltradas.map((venda) => (
-            <Link href={`/home/filtro/venda/${venda.id}`} key={venda.id}>
-              <div className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center">
-                <span className="font-medium">Venda #{venda.id}</span>
-                <span className="font-medium hidden lg:block">Vendedor: {venda.userId}</span>
-                <span className="text-gray-600">
-                  {new Date(venda.data).toLocaleDateString("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {!loading &&
-        !error &&
-        vendasFiltradas.length === 0 &&
-        data.length > 0 && (
-          <div className="text-center text-gray-600 py-8">
-            Nenhuma venda encontrada com os filtros aplicados
-          </div>
-        )}
-    </div>
+    </section>
   );
 }

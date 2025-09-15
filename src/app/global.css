@@ -29,11 +29,36 @@ input[type="number"] {
 }
 
 .titulo {
-  @apply text-4xl font-poppins font-semibold;
+  @apply sm:text-6xl text-5xl font-poppins font-semibold;
+}
+
+.table-controler th:nth-child(1),
+.table-controler td:nth-child(1) {
+  width: 12%;
+}
+.table-controler th:nth-child(2),
+.table-controler td:nth-child(2) {
+  width: 35%;
+}
+.table-controler th:nth-child(3),
+.table-controler td:nth-child(3) {
+  width: 1%;
+}
+.table-controler th:nth-child(4),
+.table-controler td:nth-child(4) {
+  width: 18%;
+}
+.table-controler th:nth-child(5),
+.table-controler td:nth-child(5) {
+  width: 12%;
+}
+.table-controler th:nth-child(6),
+.table-controler td:nth-child(6) {
+  width: 8%;
 }
 
 .table-base {
-  @apply table-auto w-full h-full text-center font-poppins text-xl;
+  @apply table-auto w-full h-full text-center font-poppins lg:text-2xl;
 }
 
 .table-base thead tr th div {
@@ -41,11 +66,11 @@ input[type="number"] {
 }
 
 .table-base thead tr {
-  @apply *:text-3xl cursor-pointer border-b;
+  @apply text-xl lg:*:text-3xl cursor-pointer border-b;
 }
 
 .table-base tbody tr {
-  @apply border-b hover:bg-gray-50 *:p-3;
+  @apply border-b hover:bg-gray-50 break-words;
 }
 
 html,

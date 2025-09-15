@@ -36,15 +36,15 @@ export default function VendasPage({ params }: { params: string }) {
 
   return (
     <div
-      className={`px-4 py-2 sm:px-1 lg:py-1 bg-white text-black h-[100%] items-center gap-4`}
+      className={`bg-white text-black w-full items-center gap-4`}
     >
       {isLoading && <TabelSkeleton columns={6} lines={6} />}
       {error && <p className="text-red-600">{error}</p>}
 
       {!isLoading && !error && (
         <>
-          <div className="flex flex-col items-center overflow-auto ">
-            <div className="text-2xl xl:text-3xl font-poppins *:text-center *:items-center flex-col lg:flex-row font-semibold *:flex *:flex-col lg:flex-wrap lg:*:gap-2 flex gap-4 lg:gap-20 lg:mb-10 lg:mt-5 justify-center">
+          <div className="flex flex-col items-center">
+            <div className="text-2xl xl:text-3xl font-poppins *:text-center *:items-center md:*:text-2xl flex-col lg:*:flex-row lg:flex-row font-semibold *:flex *:flex-col lg:flex-wrap lg:*:gap-2 flex gap-4 lg:gap-3 xl:gap-12 lg:mb-5 lx:mb-10 lg:mt-5 justify-center w-full">
               <div>
                 <p>Nome do Vendedor:</p>
                 <span>{vendas[0]?.Name || "-"}</span>
@@ -64,31 +64,36 @@ export default function VendasPage({ params }: { params: string }) {
                 </span>
               </div>
             </div>
-            <div className="hidden lg:block overflow-x-auto w-full">
-              <table className="table-base">
-                <thead>
-                  <tr>
-                    <th>Nome do Produto</th>
-                    <th>Unid.</th>
-                    <th>Preço</th>
-                    <th>Quantidade</th>
-                    <th>Valor Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {vendas.map((item, i) => (
-                    <tr key={i}>
-                      <td>{item.nome_produto}</td>
-                      <td>{item?.unidadePesagem?.toUpperCase()}</td>
-                      <td>{item.preco}</td>
-                      <td>{item.quantidade}</td>
-                      <td>{item.preco_produto_totaltotal}</td>
+            <div className="hidden lg:block w-full ">
+              <div className=" flex justify-center w-full mb-10">
+                <table className="table-base !max-w-[95%] ">
+                  <thead>
+                    <tr>
+                      <th className="w-[30%]">Produto</th>
+                      <th className="w-[10%]">Unid.</th>
+                      <th className="w-[10%]">Preço</th>
+                      <th className="w-[10%]">Quant.</th>
+                      <th className="w-[10%]">Total</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {vendas.map((item, i) => (
+                      <tr key={i}>
+                        <td>{item.nome_produto}</td>
+                        <td>{item?.unidadePesagem?.toUpperCase()}</td>
+                        <td>{formatCurrency(item.preco ?? 0)}</td>
+                        <td>{item.quantidade}</td>
+                        <td>
+                          {formatCurrency(item.preco_produto_totaltotal ?? 0)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="flex flex-col w-full text-center gap-4 lg:hidden mt-6">
+
+            <div className="flex flex-col md:flex-row md:flex-wrap *:min-w-[300px] justify-center w-auto text-center gap-4 lg:hidden mt-6">
               {vendas.map((item, i) => (
                 <div key={i} className="border rounded p-3 shadow-sm">
                   <p>

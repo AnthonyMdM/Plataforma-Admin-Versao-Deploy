@@ -1,17 +1,13 @@
-// app/home/filtro/(.)venda/[id]/page.tsx
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import VendasPage from "@/app/componentes/views/VendasPage";
-
-type Params = {
-  id: string;
-};
+import CloseIcon from "@/app/componentes/global/CloseIcon";
 
 export default function ModalVenda() {
   const router = useRouter();
-  const params = useParams<Params>();
+  const params = useParams<{ id: string }>();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -30,27 +26,23 @@ export default function ModalVenda() {
     }
   };
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, []);
-
   return (
     <div
-      className="fixed w-full inset-0 bg-black/60 flex items-center justify-center z-50"
+      className="fixed w-full inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="relative bg-white px-6 pt-4 rounded-lg shadow-lg h-[90vh] overflow-y-auto ">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-7xl max-h-[90vh] flex flex-col pt-8 xl:pt-5">
         <button
           onClick={() => router.back()}
-          className="absolute top-2 right-2 text-gray-600 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-600 transition-colors"
+          className="absolute top-2 right-5 text-gray-600 hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-600 transition-colors "
           aria-label="Fechar modal"
         >
-          ✕
+          <CloseIcon className="w-5 h-5" />
         </button>
-        <VendasPage params={params.id} />
+
+        <div className="flex-1 overflow-y-auto min-h-0 rounded-2xl">
+          <VendasPage params={params.id} />
+        </div>
       </div>
     </div>
   );
