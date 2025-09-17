@@ -1,14 +1,12 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import VendasPage from "@/app/componentes/views/VendasPage";
 import CloseIcon from "@/app/componentes/global/CloseIcon";
 import { useRouter } from "next/navigation";
+import ProdutoCreate from "@/app/componentes/produto/CreateProduto";
 
 export default function ModalVenda() {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -42,7 +40,7 @@ export default function ModalVenda() {
         </button>
 
         <div className="flex-1 overflow-y-auto min-h-0 rounded-2xl">
-          <VendasPage params={params.id} />
+          <ProdutoCreate />
         </div>
       </div>
     </div>

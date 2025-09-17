@@ -24,12 +24,8 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-}
-
-.titulo {
-  @apply sm:text-6xl text-5xl font-poppins font-semibold;
+.main {
+  @apply bg-gray-200 mx-auto px-6 py-8 flex flex-col items-center lg:items-stretch;
 }
 
 .table-controler th:nth-child(1),
@@ -73,11 +69,12 @@ input[type="number"] {
   @apply border-b hover:bg-gray-50 break-words;
 }
 
+.titulo {
+  @apply sm:text-6xl text-5xl font-poppins font-semibold;
+}
+
 html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
   height: 100%;

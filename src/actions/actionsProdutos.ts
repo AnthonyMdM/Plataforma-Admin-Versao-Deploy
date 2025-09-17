@@ -8,33 +8,63 @@ const produtoSchema = z.object({
     .string()
     .min(1, "Nome é obrigatório")
     .max(100, "Nome deve ter no máximo 100 caracteres")
-    .trim(),
+    .trim()
+    .refine((val) => val.length > 2, "Nome deve ter pelo menos 3 caracteres"),
   preco: z
     .number()
-    .min(0, "Preço deve ser maior ou igual a zero")
-    .max(999999.99, "Preço muito alto"),
+    .min(0.01, "Preço deve ser maior que zero")
+    .max(999999.99, "Preço muito alto")
+    .refine((val) => Number.isFinite(val), "Preço deve ser um número válido"),
   perecivel: z.boolean(),
-  unidadePesagem: z.string().min(1, "Unidade de pesagem é obrigatória").trim(),
+  unidadePesagem: z
+    .string()
+    .min(1, "Unidade de pesagem é obrigatória")
+    .trim()
+    .refine((val) => val !== "", "Unidade de pesagem não pode estar vazia"),
 });
 
+type FormState = {
+  errors: string[];
+  success: boolean;
+  message?: string;
+};
+
 export async function createProduto(
-  state: { errors: string[] },
+  state: FormState,
   formData: FormData
-) {
+): Promise<FormState> {
   try {
+    const nome = formData.get("nome");
+    const preco = formData.get("preco");
+    const unidade = formData.get("unidade_value") || formData.get("unidade");
+
+    if (!nome || !preco || !unidade) {
+      return {
+        errors: ["Todos os campos obrigatórios devem ser preenchidos"],
+        success: false,
+        message: "Dados incompletos",
+      };
+    }
+
     const rawData = {
-      nome_produto: formData.get("nome") as string,
-      preco: parseFloat(formData.get("preco") as string) || 0,
+      nome_produto: nome as string,
+      preco: parseFloat(preco as string),
       perecivel:
         (formData.get("perecivel") as string) === "true" ||
         (formData.get("perecivel") as string) === "on",
-      unidadePesagem: formData.get("unidade") as string,
+      unidadePesagem: unidade as string,
     };
 
-    // Validar dados
+    if (isNaN(rawData.preco)) {
+      return {
+        errors: ["Preço deve ser um número válido"],
+        success: false,
+        message: "Preço inválido",
+      };
+    }
+
     const validatedData = produtoSchema.parse(rawData);
 
-    // Verificar se produto já existe
     const produtoExistente = await prisma.produto.findFirst({
       where: {
         nome_produto: {
@@ -47,13 +77,12 @@ export async function createProduto(
       return {
         errors: [`Produto "${validatedData.nome_produto}" já existe`],
         success: false,
+        message: "Produto duplicado",
       };
     }
 
-    // Converter preço para centavos
     const precoCentavos = Math.round(validatedData.preco * 100);
 
-    // Criar produto
     const produto = await prisma.produto.create({
       data: {
         nome_produto: validatedData.nome_produto,
@@ -64,31 +93,59 @@ export async function createProduto(
     });
 
     return {
-      produto,
+      errors: [],
       success: true,
       message: `Produto "${produto.nome_produto}" criado com sucesso!`,
     };
   } catch (error) {
-    if (error && typeof error === "object" && "errors" in error) {
-      const zodErrors = (error as any).errors;
-      if (Array.isArray(zodErrors)) {
+    console.error("Erro ao criar produto:", error);
+
+    if (error instanceof z.ZodError) {
+      return {
+        errors: error.issues.map((err) => {
+          const field = err.path.join(".");
+          return `${field}: ${err.message}`;
+        }),
+        success: false,
+        message: "Dados inválidos",
+      };
+    }
+
+    if (error && typeof error === "object" && "code" in error) {
+      const prismaError = error as any;
+
+      if (prismaError.code === "P2002") {
         return {
-          errors: zodErrors.map(
-            (err: any) => `${err.path?.join(".") || "campo"}: ${err.message}`
-          ),
+          errors: ["Este produto já existe no sistema"],
           success: false,
+          message: "Produto duplicado",
+        };
+      }
+
+      if (prismaError.code === "P1001") {
+        return {
+          errors: ["Erro de conexão com o banco de dados"],
+          success: false,
+          message: "Erro de conexão",
         };
       }
     }
 
     if (error instanceof Error) {
-      return { errors: [error.message], success: false };
+      return {
+        errors: [error.message],
+        success: false,
+        message: "Erro interno",
+      };
     }
 
-    return { errors: ["Erro desconhecido"], success: false };
+    return {
+      errors: ["Erro desconhecido ao criar produto"],
+      success: false,
+      message: "Erro interno",
+    };
   }
 }
-
 export async function produtosVendidos() {
   const produtos = await prisma.produtosMaisVendidos.findMany({
     orderBy: {
@@ -114,7 +171,7 @@ export async function deleteProduto(id: number) {
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
     };
