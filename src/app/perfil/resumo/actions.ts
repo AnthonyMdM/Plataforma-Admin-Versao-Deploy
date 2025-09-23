@@ -15,7 +15,6 @@ export async function getVendasPorAno(ano?: number) {
     orderBy: { data: "asc" },
   });
 
-  // Monta estrutura de filtro
   const datasFiltro = vendas.reduce((acc, venda) => {
     const d = new Date(venda.data);
     const mes = d.getMonth() + 1;

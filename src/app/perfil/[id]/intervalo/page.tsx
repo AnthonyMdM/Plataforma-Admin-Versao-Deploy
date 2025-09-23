@@ -120,7 +120,7 @@ export default function Vendas() {
             </h2>
             {date.map((venda) => (
               <Link
-                href={`/home/venda/${venda.id}`}
+                href={`/perfil/venda/${venda.id}`}
                 key={venda.id}
                 className="p-4"
               >

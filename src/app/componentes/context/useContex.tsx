@@ -1,6 +1,6 @@
 // "use client";
 
-// import { getVendasPorAno } from "@/app/home/actions";
+// import { getVendasPorAno } from "@/app/perfill/actions";
 // import React from "react";
 
 // export type Vendas = { id: number; data: Date; userId: number };

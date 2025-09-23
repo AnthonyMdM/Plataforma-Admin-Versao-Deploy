@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
-import { getVendasPorAno } from "../../../actions/actionsVendas";
+import { getVendasPorAno } from "@/actions/actionsVendas";
 import { Vendas } from "@/types/tyeps-global";
 import Link from "next/link";
 
@@ -183,7 +183,7 @@ export default function Venda() {
           )}
         </div>
 
-        {/* Estados de loading/error */}
+        {/* Estado de loading */}
         {loading && (
           <div className="flex items-center gap-2 text-blue-600">
             <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
@@ -191,6 +191,7 @@ export default function Venda() {
           </div>
         )}
 
+        {/* Estado de error */}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -203,7 +204,7 @@ export default function Venda() {
             {vendasFiltradas.map((venda) => (
               <li key={venda.id}>
                 <Link
-                  href={`/home/venda/${venda.id}`}
+                  href={`/perfil/venda/${venda.id}`}
                   className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center "
                 >
                   <span className="font-medium">Venda #{venda.id}</span>

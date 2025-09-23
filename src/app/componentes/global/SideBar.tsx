@@ -18,7 +18,7 @@ export default function SideBar() {
           </button>
 
           <Link
-            href={"/home"}
+            href={"/perfil"}
             className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
           >
             <Image src="/home.svg" alt="Fechar menu" width={40} height={40} />
@@ -53,7 +53,7 @@ export default function SideBar() {
           />
         </li>
         <li>
-          <Link href={"/home"}>Home</Link>
+          <Link href={"/perfil"}>Home</Link>
         </li>
         <li>
           <Link href={"/"}>Perfil</Link>
