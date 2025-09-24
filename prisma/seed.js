@@ -1,5 +1,11 @@
-const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+
+async function hashPassword(password) {
+  const saltRounds = 10;
+  const hashed = await bcrypt.hash(password, saltRounds);
+  return hashed;
+}
 
 const prisma = new PrismaClient();
 
@@ -9,7 +15,7 @@ async function main() {
   const users = [
     {
       name: "Anthony Mariano",
-      email: "anthony@example.com",
+      email: "anthony@example1.com",
       password: "senha123",
       role: "admin",
     },
@@ -40,7 +46,7 @@ async function main() {
     }
 
     // Hash da senha
-    const hashedPassword = await bcrypt.hash(u.password, 12);
+    const hashedPassword = await hashPassword(u.password);
 
     await prisma.user.create({
       data: {
@@ -56,9 +62,11 @@ async function main() {
 
   // Buscar usuários criados para associar às vendas
   const createdUsers = await prisma.user.findMany();
-  
+
   if (createdUsers.length === 0) {
-    console.log("Nenhum usuário encontrado. Certifique-se de que os usuários foram criados.");
+    console.log(
+      "Nenhum usuário encontrado. Certifique-se de que os usuários foram criados."
+    );
     return;
   }
 
@@ -113,7 +121,9 @@ async function main() {
     });
 
     if (existingVenda) {
-      console.log(`Venda de ${venda.data.toLocaleDateString()} já existe, pulando...`);
+      console.log(
+        `Venda de ${venda.data.toLocaleDateString()} já existe, pulando...`
+      );
       continue;
     }
 
@@ -121,8 +131,12 @@ async function main() {
       data: venda,
     });
 
-    const user = createdUsers.find(u => u.id === venda.userId);
-    console.log(`Venda criada: ID ${createdVenda.id} - ${user?.Name} - ${venda.data.toLocaleDateString()}`);
+    const user = createdUsers.find((u) => u.id === venda.userId);
+    console.log(
+      `Venda criada: ID ${createdVenda.id} - ${
+        user?.Name
+      } - ${venda.data.toLocaleDateString()}`
+    );
   }
 
   console.log("Seed completa!");

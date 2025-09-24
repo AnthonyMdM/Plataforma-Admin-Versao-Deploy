@@ -5,11 +5,9 @@ import { Role } from "@prisma/client";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 
-export type FormState = {
-  errors: string[];
-  success: boolean;
-  message?: string;
-};
+export type FormState =
+  | { success: true; errors: []; message: string }
+  | { success: false; errors: string[]; message: string };
 
 const registerSchema = z.object({
   nome: z
@@ -39,7 +37,7 @@ const registerSchema = z.object({
     .refine((val) => val !== "", "Função não pode estar vazia"),
 });
 
-async function hashPassword(password: string) {
+export async function hashPassword(password: string) {
   const saltRounds = 10;
   const hashed = await bcrypt.hash(password, saltRounds);
   return hashed;
@@ -73,6 +71,7 @@ export async function createUser(
     };
 
     const validatedData = registerSchema.parse(rawData);
+    const nomeCompleto = `${validatedData.nome} ${validatedData.sobreNome}`;
 
     const UserExistente = await prisma.user.findFirst({
       where: {
@@ -94,7 +93,7 @@ export async function createUser(
 
     const usuario = await prisma.user.create({
       data: {
-        Name: validatedData.nome,
+        Name: nomeCompleto,
         email: validatedData.email,
         hashedPassword: senhaHash,
         Role: validatedData.role,
@@ -154,4 +153,8 @@ export async function createUser(
       message: "Erro interno",
     };
   }
+}
+export async function userLogin(email: string) {
+  const user = prisma.user.findUnique({ where: { email } });
+  return user;
 }

@@ -1,10 +1,12 @@
 import Credentials from "@auth/core/providers/credentials";
-import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { loginSchema } from "@/lib/validators/auth-schema";
 import NextAuth from "next-auth";
+import { ZodError } from "zod";
+import { userLogin } from "@/actions/actionsAccount";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
@@ -15,24 +17,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        const result = loginSchema.safeParse(credentials);
-        if (!result.success) return null;
+      authorize: async (credentials) => {
+        try {
+          const { email, password } = await loginSchema.parseAsync(credentials);
+          const user = await userLogin(email);
 
-        const { email, password } = result.data;
+          if (!user || !user.hashedPassword) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || !user.hashedPassword) return null;
+          const isValid = await bcrypt.compare(password, user.hashedPassword);
+          if (!isValid) return null;
 
-        const isValid = await bcrypt.compare(password, user.hashedPassword);
-        if (!isValid) return null;
-
-        return {
-          id: String(user.id),
-          name: user.Name,
-          email: user.email,
-          role: user.Role,
-        };
+          return {
+            id: String(user.id),
+            name: user.Name,
+            email: user.email,
+            role: user.Role,
+          };
+        } catch (error) {
+          if (error instanceof ZodError) {
+            return null;
+          }
+          return null;
+        }
       },
     }),
   ],
@@ -50,7 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  pages: {
-    signIn: "/login",
-  },
+  // pages: {
+  //   signIn: "/login",
+  // },
 });

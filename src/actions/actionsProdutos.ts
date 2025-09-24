@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { FormState } from "./actionsAccount";
 
 const produtoSchema = z.object({
   nome_produto: z
@@ -22,12 +23,6 @@ const produtoSchema = z.object({
     .trim()
     .refine((val) => val !== "", "Unidade de pesagem não pode estar vazia"),
 });
-
-export type FormState = {
-  errors: string[];
-  success: boolean;
-  message?: string;
-};
 
 export async function createProduto(
   state: FormState,
