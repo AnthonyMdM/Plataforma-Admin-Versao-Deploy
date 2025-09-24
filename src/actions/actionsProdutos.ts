@@ -23,7 +23,7 @@ const produtoSchema = z.object({
     .refine((val) => val !== "", "Unidade de pesagem não pode estar vazia"),
 });
 
-type FormState = {
+export type FormState = {
   errors: string[];
   success: boolean;
   message?: string;
@@ -36,7 +36,7 @@ export async function createProduto(
   try {
     const nome = formData.get("nome");
     const preco = formData.get("preco");
-    const unidade = formData.get("unidade_value") || formData.get("unidade");
+    const unidade = formData.get("unidade");
 
     if (!nome || !preco || !unidade) {
       return {

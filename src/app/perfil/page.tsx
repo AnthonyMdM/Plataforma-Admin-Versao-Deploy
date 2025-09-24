@@ -1,14 +1,15 @@
+"use client";
 import Link from "next/link";
 import React from "react";
+import { Role } from "@prisma/client";
+import { createUser } from "@/actions/actionsAccount";
 
-enum Role {
-  Funcionario = "Funcionario",
-  Administrador = "Administrador",
-  Desenvolvedor = "Desenvolvedor",
-}
-
-export default async function Page() {
-  const [state, formAction] = React.useActionState();
+export default function Page() {
+  const [state, formAction] = React.useActionState(createUser, {
+    errors: [],
+    success: false,
+    message: "",
+  });
   const user = false;
   return (
     <div className="w-full overflow-x-auto h-full bg-white">
@@ -49,30 +50,30 @@ export default async function Page() {
               placeholder="Digite o nome do produto"
               required
             />
-            <label htmlFor="nome" className="font-medium">
+            <label htmlFor="email" className="font-medium">
               Email
             </label>
             <input
               type="text"
-              name="nome"
-              id="nome"
+              name="email"
+              id="email"
               className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Digite o nome do produto"
+              placeholder="Digite o seu email"
               required
             />
-            <label htmlFor="nome" className="font-medium">
+            <label htmlFor="senha" className="font-medium">
               Senha
             </label>
             <input
               type="text"
-              name="nome"
-              id="nome"
+              name="senha"
+              id="senha"
               className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Digite o nome do produto"
+              placeholder="Digite sua senha"
               required
             />
             <label>Role:</label>
-            <select name="role" defaultValue={Role.Funcionario}>
+            <select name="role" defaultValue={Role.FUNCIONARIO}>
               {Object.values(Role).map((item, i) => (
                 <option key={i} value={item}>
                   {item}
