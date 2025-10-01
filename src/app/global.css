@@ -25,7 +25,23 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .main {
-  @apply bg-gray-200 mx-auto px-6 py-8 flex flex-col items-center lg:items-stretch;
+  @apply bg-gray-200 mx-auto px-6 py-8 flex flex-col items-center lg:items-stretch w-full h-full text-black overflow-auto;
+}
+
+.section {
+  @apply bg-white w-full max-w-sm p-6 rounded-2xl shadow-md md:max-w-[1000px] lg:max-w-none;
+}
+
+.divForm {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 *:space-y-2;
+}
+
+.divForm label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.divForm input {
+  @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400 transition-colors;
 }
 
 .table-controler th:nth-child(1),

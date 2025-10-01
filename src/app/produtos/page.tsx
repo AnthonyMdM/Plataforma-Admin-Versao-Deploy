@@ -1,19 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import ProdutoCreate from "@/componentes/produto/CreateProduto";
+import ProdutoTabel from "@/componentes/produto/TabelProduto";
 
-const prisma = new PrismaClient();
-
-export default async function PageProdutos() {
-  const produto = await prisma.produto.findMany();
-
-  console.log(produto);
+export default async function PageCreate() {
   return (
-    <div>
-      <ul>
-        {produto.map((item) => (
-          <li key={item.id}>{item.nome_produto}</li>
-
-        ))}
-      </ul>
-    </div>
+    <main className="main grid gap-10">
+      <ProdutoCreate />
+      <ProdutoTabel />
+    </main>
   );
 }

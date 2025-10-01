@@ -1,4 +1,4 @@
-import VendasPage from "@/app/componentes/views/VendasPage";
+import VendasPage from "@/componentes/views/VendasPage";
 import { getIdVendas } from "@/actions/actionsVendas";
 
 export async function generateStaticParams() {

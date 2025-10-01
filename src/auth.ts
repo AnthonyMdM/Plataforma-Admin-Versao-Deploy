@@ -1,9 +1,7 @@
 import Credentials from "@auth/core/providers/credentials";
 import bcrypt from "bcrypt";
-import { loginSchema } from "@/lib/validators/auth-schema";
 import NextAuth from "next-auth";
-import { ZodError } from "zod";
-import { userLogin } from "@/actions/actionsAccount";
+import { getFindLogin } from "@/actions/actionsAccount";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -19,13 +17,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         try {
-          const { email, password } = await loginSchema.parseAsync(credentials);
-          const user = await userLogin(email);
+          const email = credentials?.email as string;
+          const password = credentials?.password as string;
 
-          if (!user || !user.hashedPassword) return null;
+          if (!email || !password) {
+            console.log("Email ou senha não fornecidos");
+            return null;
+          }
+
+          const user = await getFindLogin(email);
+
+          if (!user || !user.hashedPassword) {
+            console.log("Usuário não encontrado ou sem senha");
+            return null;
+          }
 
           const isValid = await bcrypt.compare(password, user.hashedPassword);
-          if (!isValid) return null;
+
+          if (!isValid) {
+            console.log("Email ou Senha incorreto(a)");
+            return null;
+          }
 
           return {
             id: String(user.id),
@@ -34,9 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: user.Role,
           };
         } catch (error) {
-          if (error instanceof ZodError) {
-            return null;
-          }
+          console.error("Erro no authorize:", error);
           return null;
         }
       },

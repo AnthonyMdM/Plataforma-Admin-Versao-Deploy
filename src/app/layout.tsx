@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import "@/app/global.css";
-import SideBar from "./componentes/global/SideBar";
+import SideBar from "@/componentes/global/SideBar";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -21,8 +21,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="pt-Br">
@@ -30,7 +32,10 @@ export default function RootLayout({
         className={`${poppins.variable} ${roboto.variable} flex h-screen overflow`}
       >
         <SideBar />
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto">
+          {children}
+          {modal}
+        </main>
       </body>
     </html>
   );

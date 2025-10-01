@@ -4,10 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import { signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
-export type FormState =
-  | { success: true; errors: []; message: string }
-  | { success: false; errors: string[]; message: string };
+export interface FormState<T = any> {
+  success: boolean;
+  errors: string[];
+  data?: T;
+}
 
 const registerSchema = z.object({
   nome: z
@@ -48,44 +52,24 @@ export async function createUser(
   formData: FormData
 ): Promise<FormState> {
   try {
-    const nome = formData.get("nome");
-    const sobreNome = formData.get("sobreNome");
-    const email = formData.get("email");
-    const senha = formData.get("senha");
-    const role = formData.get("role");
-
-    if (!nome || !sobreNome || !email || !senha || !role) {
-      return {
-        errors: ["Todos os campos obrigatórios devem ser preenchidos"],
-        success: false,
-        message: "Dados incompletos",
-      };
-    }
-
     const rawData = {
-      nome: nome as string,
-      sobreNome: sobreNome as string,
-      email: email as string,
-      senha: senha as string,
-      role: role as Role,
+      nome: formData.get("nome") as string,
+      sobreNome: formData.get("sobreNome") as string,
+      email: formData.get("email") as string,
+      senha: formData.get("senha") as string,
+      role: formData.get("role") as Role,
     };
 
     const validatedData = registerSchema.parse(rawData);
-    const nomeCompleto = `${validatedData.nome} ${validatedData.sobreNome}`;
 
-    const UserExistente = await prisma.user.findFirst({
-      where: {
-        email: {
-          equals: validatedData.email,
-        },
-      },
+    const userExistente = await prisma.user.findFirst({
+      where: { email: validatedData.email },
     });
 
-    if (UserExistente) {
+    if (userExistente) {
       return {
-        errors: [`Email já está em uso!`],
+        errors: ["Email já está em uso!"],
         success: false,
-        message: "Email já está em uso!",
       };
     }
 
@@ -93,68 +77,73 @@ export async function createUser(
 
     const usuario = await prisma.user.create({
       data: {
-        Name: nomeCompleto,
+        Name: `${validatedData.nome} ${validatedData.sobreNome}`,
         email: validatedData.email,
         hashedPassword: senhaHash,
-        Role: validatedData.role,
+        Role: validatedData.role.toUpperCase(),
       },
     });
 
     return {
       errors: [],
       success: true,
-      message: `Usuário ${usuario.Name} criado com sucesso!`,
     };
   } catch (error) {
-    console.error("Erro ao criar produto:", error);
-
     if (error instanceof z.ZodError) {
+      const errors = error.issues.map((issue) => {
+        const field = issue.path.join(".");
+        return `${field}: ${issue.message}`;
+      });
+
       return {
-        errors: error.issues.map((err) => {
-          const field = err.path.join(".");
-          return `${field}: ${err.message}`;
-        }),
+        errors,
         success: false,
-        message: "Dados inválidos",
-      };
-    }
-
-    if (error && typeof error === "object" && "code" in error) {
-      const prismaError = error as any;
-
-      if (prismaError.code === "P2002") {
-        return {
-          errors: ["Email duplicado"],
-          success: false,
-          message: "Este email já existe no sistema",
-        };
-      }
-
-      if (prismaError.code === "P1001") {
-        return {
-          errors: ["Erro de conexão com o banco de dados"],
-          success: false,
-          message: "Erro de conexão",
-        };
-      }
-    }
-
-    if (error instanceof Error) {
-      return {
-        errors: [error.message],
-        success: false,
-        message: "Erro interno",
       };
     }
 
     return {
-      errors: ["Erro desconhecido ao criar produto"],
+      errors: [
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao criar usuário",
+      ],
       success: false,
-      message: "Erro interno",
     };
   }
 }
-export async function userLogin(email: string) {
+
+export async function getFindLogin(email: string) {
   const user = prisma.user.findUnique({ where: { email } });
   return user;
+}
+
+export async function actionLogin(
+  state: FormState,
+  formData: FormData
+): Promise<FormState> {
+  try {
+    const result = await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    });
+
+    if (!result || result.error) {
+      return {
+        success: false,
+        errors: ["Email ou senha incorretos"],
+      };
+    }
+
+    redirect("/perfil");
+  } catch (error: any) {
+    if (error.message?.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
+
+    return {
+      success: false,
+      errors: ["Erro ao fazer login. Tente novamente."],
+    };
+  }
 }
