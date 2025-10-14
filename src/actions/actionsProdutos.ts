@@ -3,8 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { FormState } from "@/actions/actionsAccount";
 import { Produto, ProdutosMaisVendidos as ProdutoMais } from "@prisma/client";
+import { FormState } from "@/types/tyeps-global";
 
 const produtoSchema = z.object({
   nome: z
@@ -46,7 +46,7 @@ function handlePrismaError(error: any): string {
 }
 
 export async function createProduto(
-  prevState: any,
+  state: FormState,
   formData: FormData
 ): Promise<FormState> {
   try {
@@ -60,7 +60,7 @@ export async function createProduto(
     const validatedData = produtoSchema.parse(rawData);
 
     const produtoExistente = await prisma.produto.findFirst({
-      where: { nome_produto: validatedData.nome },
+      where: { Nome: validatedData.nome },
       select: { id: true },
     });
 
@@ -74,14 +74,14 @@ export async function createProduto(
 
     const produto = await prisma.produto.create({
       data: {
-        nome_produto: validatedData.nome,
+        Nome: validatedData.nome,
         preco: precoCentavos,
         perecivel: validatedData.perecivel,
         unidadePesagem: validatedData.unidade_value,
       },
       select: {
         id: true,
-        nome_produto: true,
+        Nome: true,
         preco: true,
       },
     });
@@ -91,7 +91,6 @@ export async function createProduto(
     return {
       success: true,
       errors: [],
-      data: produto,
     };
   } catch (error) {
     console.error("Erro ao criar produto:", error);
@@ -133,10 +132,10 @@ export async function createProduto(
 export async function getProdutos(): Promise<FormState<Produto[]>> {
   try {
     const produtos = await prisma.produto.findMany({
-      orderBy: { nome_produto: "asc" },
+      orderBy: { Nome: "asc" },
       select: {
         id: true,
-        nome_produto: true,
+        Nome: true,
         preco: true,
         perecivel: true,
         unidadePesagem: true,
@@ -167,7 +166,7 @@ export async function deleteProduto(id: number): Promise<FormState> {
   try {
     const produto = await prisma.produto.findUnique({
       where: { id },
-      select: { nome_produto: true },
+      select: { Nome: true },
     });
 
     if (!produto) {
@@ -186,7 +185,7 @@ export async function deleteProduto(id: number): Promise<FormState> {
     return {
       success: true,
       errors: [],
-      data: { deletedName: produto.nome_produto },
+      data: { deletedName: produto.Nome },
     };
   } catch (error) {
     console.error("Erro ao deletar produto:", error);
@@ -222,7 +221,7 @@ export async function deleteProduto(id: number): Promise<FormState> {
 
 //     const produtoExistente = await prisma.produto.findFirst({
 //       where: {
-//         nome_produto: validatedData.nome,
+//         Nome: validatedData.nome,
 //         NOT: { id },
 //       },
 //       select: { id: true },
@@ -240,14 +239,14 @@ export async function deleteProduto(id: number): Promise<FormState> {
 //     const produto = await prisma.produto.update({
 //       where: { id },
 //       data: {
-//         nome_produto: validatedData.nome,
+//         Nome: validatedData.nome,
 //         preco: precoCentavos,
 //         perecivel: validatedData.perecivel,
 //         unidadePesagem: validatedData.unidade_value,
 //       },
 //       select: {
 //         id: true,
-//         nome_produto: true,
+//         Nome: true,
 //         preco: true,
 //       },
 //     });
@@ -292,13 +291,14 @@ export async function getProdutosMaisVendidos(): Promise<
     });
 
     return {
+      errors: [],
       success: true,
       data: produtos,
     };
   } catch (e) {
     return {
       success: false,
-      error: "Erro ao buscar produtos mais vendidos",
+      errors: ["Erro ao buscar produtos mais vendidos"],
     };
   }
 }

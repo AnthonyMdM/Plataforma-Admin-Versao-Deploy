@@ -1,4 +1,4 @@
-import { FormState } from "@/actions/actionsAccount";
+import { FormState } from "@/types/tyeps-global";
 
 export default function FormFeedback({ state }: { state: FormState }) {
   if (state.success) {

@@ -6,12 +6,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
-
-export interface FormState<T = any> {
-  success: boolean;
-  errors: string[];
-  data?: T;
-}
+import { FormState } from "@/types/tyeps-global";
 
 const registerSchema = z.object({
   nome: z

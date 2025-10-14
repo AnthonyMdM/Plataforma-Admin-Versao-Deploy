@@ -88,6 +88,7 @@ export default function useCombobox(options: Record<string, string>) {
     search,
     setSearch,
     selected,
+    setSelected,
     open,
     setOpen,
     focusedIndex,

@@ -1,153 +1,325 @@
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
-
-async function hashPassword(password) {
-  const saltRounds = 10;
-  const hashed = await bcrypt.hash(password, saltRounds);
-  return hashed;
-}
+const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Iniciando seed...");
+  console.log("🌱 Iniciando seed do banco de dados...");
 
-  const users = [
-    {
-      name: "Anthony Mariano",
-      email: "anthony@example2.com",
-      password: "Senha123!",
-      role: "admin",
-    },
-    {
-      name: "Maria Silva",
-      email: "maria@example.com",
-      password: "maria456",
-      role: "user",
-    },
-    {
-      name: "João Souza",
-      email: "joao@example.com",
-      password: "joao789",
-      role: "user",
-    },
-  ];
+  // Limpar dados existentes
+  await prisma.venda_produto.deleteMany();
+  await prisma.venda.deleteMany();
+  await prisma.produto.deleteMany();
+  await prisma.user.deleteMany();
 
-  // Criar usuários com senhas hasheadas
-  for (const u of users) {
-    // Verificar se o usuário já existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email: u.email },
-    });
+  console.log("✅ Dados anteriores removidos");
 
-    if (existingUser) {
-      console.log(`Usuário ${u.email} já existe, pulando...`);
-      continue;
-    }
+  // Criar usuários
+  const hashedPassword = await bcrypt.hash("senha123", 10);
 
-    // Hash da senha
-    const hashedPassword = await hashPassword(u.password);
-
-    await prisma.user.create({
-      data: {
-        Name: u.name,
-        email: u.email,
-        hashedPassword: hashedPassword,
-        Role: u.role,
+  const users = await prisma.user.createMany({
+    data: [
+      {
+        Name: "Admin Silva",
+        email: "admin@example.com",
+        hashedPassword,
+        Role: "ADMINISTRADOR",
       },
-    });
-
-    console.log(`Usuário ${u.name} criado com sucesso!`);
-  }
-
-  // Buscar usuários criados para associar às vendas
-  const createdUsers = await prisma.user.findMany();
-
-  if (createdUsers.length === 0) {
-    console.log(
-      "Nenhum usuário encontrado. Certifique-se de que os usuários foram criados."
-    );
-    return;
-  }
-
-  // Dados de vendas para seed
-  const vendas = [
-    {
-      userId: createdUsers[0].id, // Anthony (admin)
-      data: new Date("2023-01-15T10:30:00"),
-    },
-    {
-      userId: createdUsers[0].id, // Anthony (admin)
-      data: new Date("2023-01-20T14:45:00"),
-    },
-    {
-      userId: createdUsers[1].id, // Maria
-      data: new Date("2023-02-05T09:15:00"),
-    },
-    {
-      userId: createdUsers[1].id, // Maria
-      data: new Date("2023-02-12T16:20:00"),
-    },
-    {
-      userId: createdUsers[2].id, // João
-      data: new Date("2023-02-18T11:00:00"),
-    },
-    {
-      userId: createdUsers[1].id, // Maria
-      data: new Date("2023-03-01T13:30:00"),
-    },
-    {
-      userId: createdUsers[0].id, // Anthony
-      data: new Date("2023-03-08T08:45:00"),
-    },
-    {
-      userId: createdUsers[2].id, // João
-      data: new Date("2023-03-15T17:10:00"),
-    },
-    {
-      userId: createdUsers[1].id, // Maria
-      data: new Date("2022-03-22T12:25:00"),
-    },
-  ];
-
-  // Criar vendas
-  for (const venda of vendas) {
-    // Verificar se já existe uma venda com os mesmos dados
-    const existingVenda = await prisma.venda.findFirst({
-      where: {
-        userId: venda.userId,
-        data: venda.data,
+      {
+        Name: "João Funcionário",
+        email: "joao@example.com",
+        hashedPassword,
+        Role: "FUNCIONARIO",
       },
-    });
+      {
+        Name: "Maria Desenvolvedora",
+        email: "maria@example.com",
+        hashedPassword,
+        Role: "DESENVOLVEDOR",
+      },
+      {
+        Name: "Carlos Cliente",
+        email: "carlos@example.com",
+        hashedPassword,
+        Role: "CLIENTE",
+      },
+    ],
+  });
 
-    if (existingVenda) {
-      console.log(
-        `Venda de ${venda.data.toLocaleDateString()} já existe, pulando...`
-      );
-      continue;
-    }
+  console.log(`✅ ${users.count} usuários criados`);
 
-    const createdVenda = await prisma.venda.create({
-      data: venda,
-    });
+  // Buscar usuários criados
+  const adminUser = await prisma.user.findUnique({
+    where: { email: "admin@example.com" },
+  });
 
-    const user = createdUsers.find((u) => u.id === venda.userId);
-    console.log(
-      `Venda criada: ID ${createdVenda.id} - ${
-        user?.Name
-      } - ${venda.data.toLocaleDateString()}`
-    );
-  }
+  const funcionarioUser = await prisma.user.findUnique({
+    where: { email: "joao@example.com" },
+  });
 
-  console.log("Seed completa!");
+  // Criar produtos
+  const produtos = await prisma.produto.createMany({
+    data: [
+      // Produtos perecíveis
+      {
+        Nome: "Banana Prata",
+        unidadePesagem: "Kg",
+        preco: 599, // R$ 5,99
+        perecivel: true,
+      },
+      {
+        Nome: "Tomate",
+        unidadePesagem: "Kg",
+        preco: 899, // R$ 8,99
+        perecivel: true,
+      },
+      {
+        Nome: "Alface",
+        unidadePesagem: "Un",
+        preco: 350, // R$ 3,50
+        perecivel: true,
+      },
+      {
+        Nome: "Leite Integral",
+        unidadePesagem: "L",
+        preco: 485, // R$ 4,85
+        perecivel: true,
+      },
+      {
+        Nome: "Carne Bovina",
+        unidadePesagem: "Kg",
+        preco: 3590, // R$ 35,90
+        perecivel: true,
+      },
+      {
+        Nome: "Frango",
+        unidadePesagem: "Kg",
+        preco: 1890, // R$ 18,90
+        perecivel: true,
+      },
+      {
+        Nome: "Queijo Minas",
+        unidadePesagem: "Kg",
+        preco: 4299, // R$ 42,99
+        perecivel: true,
+      },
+      {
+        Nome: "Pão Francês",
+        unidadePesagem: "Kg",
+        preco: 1250, // R$ 12,50
+        perecivel: true,
+      },
+
+      // Produtos não perecíveis
+      {
+        Nome: "Arroz Branco",
+        unidadePesagem: "Kg",
+        preco: 550, // R$ 5,50
+        perecivel: false,
+      },
+      {
+        Nome: "Feijão Preto",
+        unidadePesagem: "Kg",
+        preco: 780, // R$ 7,80
+        perecivel: false,
+      },
+      {
+        Nome: "Açúcar",
+        unidadePesagem: "Kg",
+        preco: 420, // R$ 4,20
+        perecivel: false,
+      },
+      {
+        Nome: "Café em Pó",
+        unidadePesagem: "Kg",
+        preco: 2890, // R$ 28,90
+        perecivel: false,
+      },
+      {
+        Nome: "Óleo de Soja",
+        unidadePesagem: "L",
+        preco: 890, // R$ 8,90
+        perecivel: false,
+      },
+      {
+        Nome: "Macarrão",
+        unidadePesagem: "Kg",
+        preco: 650, // R$ 6,50
+        perecivel: false,
+      },
+      {
+        Nome: "Sal",
+        unidadePesagem: "Kg",
+        preco: 180, // R$ 1,80
+        perecivel: false,
+      },
+      {
+        Nome: "Detergente",
+        unidadePesagem: "Un",
+        preco: 299, // R$ 2,99
+        perecivel: false,
+      },
+    ],
+  });
+
+  console.log(`✅ ${produtos.count} produtos criados`);
+
+  // Buscar produtos para criar vendas
+  const banana = await prisma.produto.findFirst({
+    where: { Nome: "Banana Prata" },
+  });
+  const tomate = await prisma.produto.findFirst({
+    where: { Nome: "Tomate" },
+  });
+  const arroz = await prisma.produto.findFirst({
+    where: { Nome: "Arroz Branco" },
+  });
+  const feijao = await prisma.produto.findFirst({
+    where: { Nome: "Feijão Preto" },
+  });
+  const carne = await prisma.produto.findFirst({
+    where: { Nome: "Carne Bovina" },
+  });
+  const leite = await prisma.produto.findFirst({
+    where: { Nome: "Leite Integral" },
+  });
+
+  // Criar vendas com produtos
+  // Venda 1 - Admin
+  const venda1 = await prisma.venda.create({
+    data: {
+      userId: adminUser.id,
+      data: new Date("2025-10-01"),
+      venda_produto: {
+        create: [
+          {
+            produtoId: banana.id,
+            quantidade: 2,
+            preco_unitario: 599,
+            preco_produto_totaltotal: 1198,
+          },
+          {
+            produtoId: tomate.id,
+            quantidade: 1.5,
+            preco_unitario: 899,
+            preco_produto_totaltotal: 1349,
+          },
+          {
+            produtoId: arroz.id,
+            quantidade: 2,
+            preco_unitario: 550,
+            preco_produto_totaltotal: 1100,
+          },
+        ],
+      },
+    },
+  });
+
+  // Venda 2 - Funcionário
+  const venda2 = await prisma.venda.create({
+    data: {
+      userId: funcionarioUser.id,
+      data: new Date("2025-10-02"),
+      venda_produto: {
+        create: [
+          {
+            produtoId: carne.id,
+            quantidade: 2,
+            preco_unitario: 3590,
+            preco_produto_totaltotal: 7180,
+          },
+          {
+            produtoId: feijao.id,
+            quantidade: 3,
+            preco_unitario: 780,
+            preco_produto_totaltotal: 2340,
+          },
+        ],
+      },
+    },
+  });
+
+  // Venda 3 - Admin (venda maior)
+  const venda3 = await prisma.venda.create({
+    data: {
+      userId: adminUser.id,
+      data: new Date("2025-10-05"),
+      venda_produto: {
+        create: [
+          {
+            produtoId: carne.id,
+            quantidade: 1.5,
+            preco_unitario: 3590,
+            preco_produto_totaltotal: 5385,
+          },
+          {
+            produtoId: leite.id,
+            quantidade: 10,
+            preco_unitario: 485,
+            preco_produto_totaltotal: 4850,
+          },
+          {
+            produtoId: banana.id,
+            quantidade: 5,
+            preco_unitario: 599,
+            preco_produto_totaltotal: 2995,
+          },
+        ],
+      },
+    },
+  });
+
+  // Venda 4 - Funcionário (venda recente)
+  const venda4 = await prisma.venda.create({
+    data: {
+      userId: funcionarioUser.id,
+      data: new Date("2025-10-07"),
+      venda_produto: {
+        create: [
+          {
+            produtoId: arroz.id,
+            quantidade: 5,
+            preco_unitario: 550,
+            preco_produto_totaltotal: 2750,
+          },
+          {
+            produtoId: feijao.id,
+            quantidade: 2,
+            preco_unitario: 780,
+            preco_produto_totaltotal: 1560,
+          },
+          {
+            produtoId: tomate.id,
+            quantidade: 1,
+            preco_unitario: 899,
+            preco_produto_totaltotal: 899,
+          },
+        ],
+      },
+    },
+  });
+
+  console.log(`✅ 4 vendas criadas com itens`);
+
+  // Estatísticas finais
+  const totalUsers = await prisma.user.count();
+  const totalProdutos = await prisma.produto.count();
+  const totalVendas = await prisma.venda.count();
+  const totalItens = await prisma.venda_produto.count();
+
+  console.log("\n📊 Estatísticas finais:");
+  console.log(`   👥 Usuários: ${totalUsers}`);
+  console.log(`   📦 Produtos: ${totalProdutos}`);
+  console.log(`   💰 Vendas: ${totalVendas}`);
+  console.log(`   🛒 Itens vendidos: ${totalItens}`);
+  console.log("\n✨ Seed concluído com sucesso!");
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
+  .catch((e) => {
+    console.error("❌ Erro ao executar seed:", e);
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });
