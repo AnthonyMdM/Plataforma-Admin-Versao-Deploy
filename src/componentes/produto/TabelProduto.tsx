@@ -22,7 +22,7 @@ export default function ProdutoTabel() {
     if (searchProduto.length === 0) return [];
 
     const uniqueNames = Array.from(
-      data.map((item) => item.nome_produto).filter(Boolean)
+      data.map((item) => item.Nome).filter(Boolean)
     );
 
     return uniqueNames.filter((nome) =>
@@ -32,7 +32,7 @@ export default function ProdutoTabel() {
 
   const filteredData = React.useMemo(() => {
     if (!selectedProduto) return data;
-    return data.filter((item) => item.nome_produto === selectedProduto);
+    return data.filter((item) => item.Nome === selectedProduto);
   }, [data, selectedProduto]);
   const fetchData = React.useCallback(async () => {
     try {
@@ -162,12 +162,6 @@ export default function ProdutoTabel() {
               Limpar
             </button>
           )}
-          <Link
-            href="/criarProduto"
-            className="bg-blue-500 text-white font-semibold px-4 py-2 rounded hover:bg-blue-600 flex items-center"
-          >
-            Criar Produto
-          </Link>
         </div>
 
         {showSuggestions && filteredProducts.length > 0 && (
@@ -214,7 +208,7 @@ export default function ProdutoTabel() {
                       />
                     </div>
                   </th>
-                  <th onClick={() => handleSort("nome_produto")}>
+                  <th onClick={() => handleSort("Nome")}>
                     <div>
                       <span>Nome</span>
                       <Image
@@ -245,6 +239,9 @@ export default function ProdutoTabel() {
                     <span>Per.</span>
                   </th>
                   <th>
+                    <span>Editar</span>
+                  </th>
+                  <th>
                     <span>Excluir</span>
                   </th>
                 </tr>
@@ -257,7 +254,7 @@ export default function ProdutoTabel() {
                       className="border-b hover:bg-gray-50 *:py-2"
                     >
                       <td>{item.id}</td>
-                      <td>{item.nome_produto?.toUpperCase()}</td>
+                      <td>{item.Nome?.toUpperCase()}</td>
                       <td>{item.unidadePesagem?.toUpperCase()}</td>
                       <td>{formatCurrency(item.preco)}</td>
                       <td
@@ -266,6 +263,20 @@ export default function ProdutoTabel() {
                         }`}
                       >
                         {item.perecivel ? "TRUE" : "FALSE"}
+                      </td>
+                      <td>
+                        <Link
+                          href={`/produtos/${item.id}`}
+                          className="cursor-pointer"
+                        >
+                          <Image
+                            src="/edit.svg"
+                            width={40}
+                            height={40}
+                            alt="Editar"
+                            className="inline-block hover:scale-110 transition curso-pointer"
+                          />
+                        </Link>
                       </td>
                       <td>
                         <button
@@ -305,7 +316,7 @@ export default function ProdutoTabel() {
                 className="border rounded-lg p-3 shadow-sm text-left"
               >
                 <p className="*:break-words">
-                  <strong>Produto:</strong> {item.nome_produto}
+                  <strong>Produto:</strong> {item.Nome}
                 </p>
                 <p>
                   <strong>Unid.:</strong>
@@ -318,6 +329,18 @@ export default function ProdutoTabel() {
                   <strong>Perecível:</strong>{" "}
                   {item.perecivel ? "TRUE" : "FALSE"}
                 </p>
+                <Link
+                  href={`/produtos/${item.id}`}
+                  className="p-1 cursor-pointer hover:bg-red-700 hover:rounded-xl"
+                >
+                  <Image
+                    src="/edit.svg"
+                    width={30}
+                    height={30}
+                    alt="Editar"
+                    className="inline-block hover:scale-110 transition hover:invert"
+                  />
+                </Link>
                 <button
                   onClick={() => handleDeletItem(item.id)}
                   className="p-1 cursor-pointer hover:bg-red-700 hover:rounded-xl"

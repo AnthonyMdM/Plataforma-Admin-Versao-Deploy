@@ -7,5 +7,5 @@ export interface FormState<T = any> {
   data?: T;
 }
 export type PerfilPageProps = {
-  user: Session["user"] | undefined;
+  user: Session["user"];
 };

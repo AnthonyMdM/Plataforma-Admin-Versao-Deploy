@@ -15,7 +15,7 @@ const fetcher = async () => {
 };
 
 export default function VendasCreate({ user }: PerfilPageProps) {
-  const { data, error, isLoading } = useSWR(["produtos"], fetcher, {
+  const { data } = useSWR(["produtos"], fetcher, {
     keepPreviousData: true,
   });
   const [itens, setItens] = React.useState<
@@ -457,7 +457,7 @@ export default function VendasCreate({ user }: PerfilPageProps) {
       )}
 
       <form ref={formRef} className="space-y-6 font-sans" action={handleSubmit}>
-        <input type="hidden" id="idUser" name="idUser" value={user?.id} />
+        <input type="hidden" id="idUser" name="idUser" value={user.id} />
         <input type="hidden" name="precoTotal" value={valorTotalVenda} />
 
         {itens.map((item, index) => (

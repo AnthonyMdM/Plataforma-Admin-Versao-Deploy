@@ -16,7 +16,7 @@ export default function Page() {
     [formAction]
   );
   return (
-    <div className="main md:!items-center md:!justify-center">
+    <main className="main md:!items-center md:!justify-center">
       <section className="section md:!max-w-[40%] md:!min-h-[60%] flex flex-col sm:items-center sm:justify-center">
         <header className="mb-8">
           <h1 className="titulo">Faça Login</h1>
@@ -36,6 +36,6 @@ export default function Page() {
           <ButtonForm />
         </form>
       </section>
-    </div>
+    </main>
   );
 }

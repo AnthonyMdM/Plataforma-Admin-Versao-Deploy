@@ -129,6 +129,15 @@ export async function createProduto(
   }
 }
 
+export async function getProduto(id: number) {
+  const produto = await prisma.produto.findUnique({
+    where: {
+      id,
+    },
+  });
+  return { produto };
+}
+
 export async function getProdutos(): Promise<FormState<Produto[]>> {
   try {
     const produtos = await prisma.produto.findMany({
@@ -204,83 +213,60 @@ export async function deleteProduto(id: number): Promise<FormState> {
   }
 }
 
-// export async function updateProduto(
-//   id: number,
-//   prevState: any,
-//   formData: FormData
-// ): Promise<FormState> {
-//   try {
-//     const rawData = {
-//       nome: formData.get("nome"),
-//       preco: formData.get("preco"),
-//       unidade_value: formData.get("unidade_value"),
-//       perecivel: formData.get("perecivel"),
-//     };
+export async function updateProduto(
+  state: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const idProduto = Number(formData.get("idProduto"));
+  const nome = formData.get("nome")?.toString();
+  const valor = formData.get("valor")
+    ? Number(formData.get("valor"))
+    : undefined;
 
-//     const validatedData = produtoSchema.parse(rawData);
+  if (!idProduto || isNaN(idProduto)) {
+    return {
+      errors: ["ID do produto inválido."],
+      success: false,
+    };
+  }
 
-//     const produtoExistente = await prisma.produto.findFirst({
-//       where: {
-//         Nome: validatedData.nome,
-//         NOT: { id },
-//       },
-//       select: { id: true },
-//     });
+  if (!nome || nome.trim() === "") {
+    return {
+      errors: ["Nome não pode estar vazio."],
+      success: false,
+    };
+  }
 
-//     if (produtoExistente) {
-//       return {
-//         success: false,
-//         errors: [`Já existe outro produto com o nome "${validatedData.nome}"`],
-//       };
-//     }
+  if (!valor || valor <= 0) {
+    return {
+      errors: ["Preço deve ser maior que zero."],
+      success: false,
+    };
+  }
 
-//     const precoCentavos = Math.round(validatedData.preco * 100);
+  try {
+    await prisma.produto.update({
+      where: {
+        id: idProduto,
+      },
+      data: {
+        Nome: nome,
+        preco: valor, 
+      },
+    });
 
-//     const produto = await prisma.produto.update({
-//       where: { id },
-//       data: {
-//         Nome: validatedData.nome,
-//         preco: precoCentavos,
-//         perecivel: validatedData.perecivel,
-//         unidadePesagem: validatedData.unidade_value,
-//       },
-//       select: {
-//         id: true,
-//         Nome: true,
-//         preco: true,
-//       },
-//     });
-
-//     revalidatePath("/produtos");
-
-//     return {
-//       success: true,
-//       errors: [],
-//       data: produto,
-//     };
-//   } catch (error) {
-//     console.error("Erro ao atualizar produto:", error);
-
-//     if (error instanceof z.ZodError) {
-//       return {
-//         success: false,
-//         errors: error.issues.map((issue) => issue.message),
-//       };
-//     }
-
-//     if (error && typeof error === "object" && "code" in error) {
-//       return {
-//         success: false,
-//         errors: [handlePrismaError(error)],
-//       };
-//     }
-
-//     return {
-//       success: false,
-//       errors: ["Erro ao atualizar produto"],
-//     };
-//   }
-// }
+    return {
+      success: true,
+      errors: [],
+    };
+  } catch (error) {
+    console.error("Erro ao atualizar produto:", error);
+    return {
+      errors: ["Não foi possível editar o item."],
+      success: false,
+    };
+  }
+}
 
 export async function getProdutosMaisVendidos(): Promise<
   FormState<ProdutoMais[]>

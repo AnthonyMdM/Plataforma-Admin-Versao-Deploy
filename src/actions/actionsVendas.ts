@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { FormState } from "@/types/tyeps-global";
-import z from "zod";
+import z, { number } from "zod";
 
 const vendaSchema = z
   .object({
@@ -187,4 +187,14 @@ export async function getIdVendas() {
   });
 
   return vendas;
+}
+
+export async function getVendasUserId(id: number) {
+  const vendas = await prisma.venda.findMany({
+    where: {
+      userId: { equals: id },
+    },
+  });
+
+  return { vendas };
 }

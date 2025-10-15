@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { getVendasPorAno } from "@/actions/actionsVendas";
 import { Vendas } from "@/types/tyeps-global";
 import Link from "next/link";
+import useCombobox from "@/hooks/useCombobox";
 
 export default function Venda() {
   const anoAtual = new Date().getFullYear();
@@ -13,13 +14,26 @@ export default function Venda() {
   );
 
   const [ano, setAno] = React.useState<number>(anoAtual);
-  const [mes, setMes] = React.useState<number | null>(null);
-  const [dia, setDia] = React.useState<number | null>(null);
   const [data, setData] = React.useState<Vendas[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  const opcoesFiltro = useMemo(() => {
+  const nomesMeses = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
+
+  const { opcoesMeses } = useMemo(() => {
     const mesesComDados = new Map<number, Set<number>>();
 
     data.forEach((venda) => {
@@ -33,13 +47,38 @@ export default function Venda() {
       mesesComDados.get(mesVenda)!.add(diaVenda);
     });
 
-    return {
-      meses: Array.from(mesesComDados.keys()).sort((a, b) => a - b),
-      diasDoMes: mes
-        ? Array.from(mesesComDados.get(mes) || []).sort((a, b) => a - b)
-        : [],
-    };
-  }, [data, mes]);
+    const meses: Record<string, string> = {};
+    Array.from(mesesComDados.keys())
+      .sort((a, b) => a - b)
+      .forEach((m) => {
+        meses[nomesMeses[m - 1]] = String(m);
+      });
+
+    return { opcoesMeses: meses, mesesComDados };
+  }, [data]);
+
+  const comboboxMes = useCombobox(opcoesMeses);
+
+  const opcoesDiasAtual = useMemo(() => {
+    if (!comboboxMes.selected) return {};
+
+    const mesNum = Number(comboboxMes.selected);
+    const dias: Record<string, string> = {};
+
+    data.forEach((venda) => {
+      const dataVenda = new Date(venda.data);
+      const mesVenda = dataVenda.getMonth() + 1;
+      const diaVenda = dataVenda.getDate();
+
+      if (mesVenda === mesNum) {
+        dias[`Dia ${diaVenda}`] = String(diaVenda);
+      }
+    });
+
+    return dias;
+  }, [data, comboboxMes.selected]);
+
+  const comboboxDia = useCombobox(opcoesDiasAtual);
 
   const vendasFiltradas = useMemo(() => {
     return data.filter((venda) => {
@@ -47,20 +86,29 @@ export default function Venda() {
       const mesVenda = dataVenda.getMonth() + 1;
       const diaVenda = dataVenda.getDate();
 
-      return (!mes || mesVenda === mes) && (!dia || diaVenda === dia);
+      const mesFiltro = comboboxMes.selected
+        ? Number(comboboxMes.selected)
+        : null;
+      const diaFiltro = comboboxDia.selected
+        ? Number(comboboxDia.selected)
+        : null;
+
+      return (
+        (!mesFiltro || mesVenda === mesFiltro) &&
+        (!diaFiltro || diaVenda === diaFiltro)
+      );
     });
-  }, [data, mes, dia]);
+  }, [data, comboboxMes.selected, comboboxDia.selected]);
 
   function handleAno(anoEscolha: number) {
     setAno(anoEscolha);
-    setMes(null);
-    setDia(null);
+    comboboxMes.reset();
+    comboboxDia.reset();
   }
 
-  function handleMes(mesEscolha: number | null) {
-    setMes(mesEscolha);
-    setDia(null);
-  }
+  React.useEffect(() => {
+    comboboxDia.reset();
+  }, [comboboxMes.selected]);
 
   React.useEffect(() => {
     async function fetchInfo(ano: number) {
@@ -87,25 +135,10 @@ export default function Venda() {
     fetchInfo(ano);
   }, [ano]);
 
-  const nomesMeses = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
-  ];
-
   return (
-    <section className="px-6 bg-gray-100 overflow-auto h-full text-black flex justify-center">
-      <div className="bg-white px-6 my-5 rounded-2xl shadow-md w-auto lg:w-[95%] h-max">
-        <h1 className="titulo lg:mt-2 mb-2 md:mb-6 flex flex-col md:flex-row items-baseline gap-1 pt-5">
+    <main className="main">
+      <section className="section">
+        <h1 className="titulo lg:mt-2 mb-2 md:mb-6 flex flex-col md:flex-row items-baseline gap-1">
           Vendas
           <span className="md:text-xl text-sm">
             ({vendasFiltradas.length} encontrada
@@ -113,7 +146,8 @@ export default function Venda() {
           </span>
         </h1>
 
-        <div className="flex gap-4 text-lg mb-6 flex-wrap">
+        <div className="flex gap-4 text-lg mb-6 flex-wrap items-end">
+          {/* Seletor de Ano */}
           <div>
             <label className="block font-medium mb-1">Ano</label>
             <select
@@ -130,52 +164,109 @@ export default function Venda() {
             </select>
           </div>
 
-          <div>
+          {/* Combobox Mês */}
+          <div className="relative">
             <label className="block font-medium mb-1">Mês</label>
-            <select
-              value={mes ?? ""}
-              onChange={(e) =>
-                handleMes(e.target.value ? Number(e.target.value) : null)
-              }
-              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={opcoesFiltro.meses.length === 0}
-            >
-              <option value="">Todos os meses</option>
-              {opcoesFiltro.meses.map((m) => (
-                <option key={m} value={m}>
-                  {nomesMeses[m - 1]}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Dia</label>
-            <select
-              value={dia ?? ""}
-              onChange={(e) =>
-                setDia(e.target.value ? Number(e.target.value) : null)
-              }
-              className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={!mes || opcoesFiltro.diasDoMes.length === 0}
-            >
-              <option value="">Todos os dias</option>
-              {opcoesFiltro.diasDoMes.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <input
+                type="text"
+                value={comboboxMes.search}
+                onChange={(e) => comboboxMes.setSearch(e.target.value)}
+                onFocus={() => comboboxMes.setOpen(true)}
+                onBlur={() => setTimeout(() => comboboxMes.setOpen(false), 200)}
+                onKeyDown={comboboxMes.handleKeyDown}
+                placeholder="Todos os meses"
+                disabled={Object.keys(opcoesMeses).length === 0}
+                className="border border-gray-300 p-2 rounded w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
+              {comboboxMes.selected && (
+                <button
+                  onClick={comboboxMes.handleClear}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  type="button"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {comboboxMes.open && comboboxMes.availableOptions.length > 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto">
+                {comboboxMes.availableOptions.map(([label, value], idx) => (
+                  <div
+                    key={value}
+                    onClick={() => comboboxMes.handleSelect(label, value)}
+                    className={`p-2 cursor-pointer ${
+                      idx === comboboxMes.focusedIndex
+                        ? "bg-blue-100"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Botão limpar filtros */}
-          {(mes || dia) && (
-            <div className="flex items-end">
+          {/* Combobox Dia */}
+          <div className="relative">
+            <label className="block font-medium mb-1">Dia</label>
+            <div className="relative">
+              <input
+                type="text"
+                value={comboboxDia.search}
+                onChange={(e) => comboboxDia.setSearch(e.target.value)}
+                onFocus={() => comboboxDia.setOpen(true)}
+                onBlur={() => setTimeout(() => comboboxDia.setOpen(false), 200)}
+                onKeyDown={comboboxDia.handleKeyDown}
+                placeholder="Todos os dias"
+                disabled={
+                  !comboboxMes.selected ||
+                  Object.keys(opcoesDiasAtual).length === 0
+                }
+                className="border border-gray-300 p-2 rounded w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
+              {comboboxDia.selected && (
+                <button
+                  onClick={comboboxDia.handleClear}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  type="button"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {comboboxDia.open && comboboxDia.availableOptions.length > 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto">
+                {comboboxDia.availableOptions.map(([label, value], idx) => (
+                  <div
+                    key={value}
+                    onClick={() => comboboxDia.handleSelect(label, value)}
+                    className={`p-2 cursor-pointer ${
+                      idx === comboboxDia.focusedIndex
+                        ? "bg-blue-100"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Botão Limpar Filtros */}
+          {(comboboxMes.selected || comboboxDia.selected) && (
+            <div>
               <button
                 onClick={() => {
-                  setMes(null);
-                  setDia(null);
+                  comboboxMes.reset();
+                  comboboxDia.reset();
                 }}
                 className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                type="button"
               >
                 Limpar filtros
               </button>
@@ -200,7 +291,7 @@ export default function Venda() {
 
         {/* Lista de vendas */}
         {!loading && !error && vendasFiltradas.length > 0 && (
-          <ul className=" *:border-b-1 [&>*:last-child]:border-b-0">
+          <ul className=" *:border-b-1 [&>*:last-child]:border-b-0 mb-2">
             {vendasFiltradas.map((venda) => (
               <li key={venda.id}>
                 <Link
@@ -232,7 +323,7 @@ export default function Venda() {
               Nenhuma venda encontrada com os filtros aplicados
             </div>
           )}
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }

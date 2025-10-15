@@ -17,7 +17,6 @@ export default function Page() {
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [showSuggestions, setShowSuggestions] = React.useState(false);
 
-  // Filtra produtos únicos pelos nomes
   const filteredProducts = React.useMemo(() => {
     if (search.length === 0) return [];
 
@@ -30,7 +29,6 @@ export default function Page() {
     );
   }, [data, search]);
 
-  // Filtra os dados da tabela baseado na seleção
   const filteredData = React.useMemo(() => {
     if (!selected) return data;
     return data.filter((item) => item.nome === selected);
