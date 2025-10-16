@@ -1,25 +1,11 @@
 "use client";
+import React, { useMemo } from "react";
+import { getVendasPorAno } from "@/actions/actionsVendas";
+import { Vendas } from "@/types/tyeps-global";
 import Link from "next/link";
-import React from "react";
-import useSWR from "swr";
-import { getVendasUserId } from "@/actions/actionsVendas";
 import useCombobox from "@/hooks/useCombobox";
-import { useSession } from "next-auth/react";
 
-async function fetcher([_, id]: [string, string]) {
-  return await getVendasUserId(+id);
-}
-
-export default function PerfilPage() {
-  const { data: session } = useSession();
-  const { data, error, isLoading } = useSWR(
-    ["vendasUser", session?.user.id],
-    fetcher,
-    {
-      keepPreviousData: true,
-    }
-  );
-
+export default function VendasDinamico() {
   const anoAtual = new Date().getFullYear();
   const anoCriacao = 2020;
   const anosDisponiveis = Array.from(
@@ -28,6 +14,9 @@ export default function PerfilPage() {
   );
 
   const [ano, setAno] = React.useState<number>(anoAtual);
+  const [data, setData] = React.useState<Vendas[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   const nomesMeses = [
     "Janeiro",
@@ -44,19 +33,10 @@ export default function PerfilPage() {
     "Dezembro",
   ];
 
-  const dadosDoAno = React.useMemo(() => {
-    if (!data?.vendas) return [];
-
-    return data.vendas.filter((venda) => {
-      const dataVenda = new Date(venda.data);
-      return dataVenda.getFullYear() === ano;
-    });
-  }, [data, ano]);
-
-  const { opcoesMeses } = React.useMemo(() => {
+  const { opcoesMeses } = useMemo(() => {
     const mesesComDados = new Map<number, Set<number>>();
 
-    dadosDoAno.forEach((venda) => {
+    data.forEach((venda) => {
       const dataVenda = new Date(venda.data);
       const mesVenda = dataVenda.getMonth() + 1;
       const diaVenda = dataVenda.getDate();
@@ -75,17 +55,17 @@ export default function PerfilPage() {
       });
 
     return { opcoesMeses: meses, mesesComDados };
-  }, [dadosDoAno]);
+  }, [data]);
 
   const comboboxMes = useCombobox(opcoesMeses);
 
-  const opcoesDiasAtual = React.useMemo(() => {
+  const opcoesDiasAtual = useMemo(() => {
     if (!comboboxMes.selected) return {};
 
     const mesNum = Number(comboboxMes.selected);
     const dias: Record<string, string> = {};
 
-    dadosDoAno.forEach((venda) => {
+    data.forEach((venda) => {
       const dataVenda = new Date(venda.data);
       const mesVenda = dataVenda.getMonth() + 1;
       const diaVenda = dataVenda.getDate();
@@ -96,12 +76,12 @@ export default function PerfilPage() {
     });
 
     return dias;
-  }, [dadosDoAno, comboboxMes.selected]);
+  }, [data, comboboxMes.selected]);
 
   const comboboxDia = useCombobox(opcoesDiasAtual);
 
-  const vendasFiltradas = React.useMemo(() => {
-    return dadosDoAno.filter((venda) => {
+  const vendasFiltradas = useMemo(() => {
+    return data.filter((venda) => {
       const dataVenda = new Date(venda.data);
       const mesVenda = dataVenda.getMonth() + 1;
       const diaVenda = dataVenda.getDate();
@@ -118,7 +98,7 @@ export default function PerfilPage() {
         (!diaFiltro || diaVenda === diaFiltro)
       );
     });
-  }, [dadosDoAno, comboboxMes.selected, comboboxDia.selected]);
+  }, [data, comboboxMes.selected, comboboxDia.selected]);
 
   function handleAno(anoEscolha: number) {
     setAno(anoEscolha);
@@ -130,42 +110,50 @@ export default function PerfilPage() {
     comboboxDia.reset();
   }, [comboboxMes.selected]);
 
-  const errorMessage = React.useMemo(() => {
-    if (error) return "Erro ao carregar vendas";
-    if (data?.vendas.length === 0) return "Não há vendas cadastradas";
-    if (dadosDoAno.length === 0) return `Não há vendas em ${ano}`;
-    if (vendasFiltradas.length === 0)
-      return "Não há vendas no período selecionado";
-    return null;
-  }, [error, data, dadosDoAno, vendasFiltradas, ano]);
+  React.useEffect(() => {
+    async function fetchInfo(ano: number) {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const { vendas } = await getVendasPorAno(ano);
+
+        if (vendas.length === 0) {
+          setError("Não há vendas nesse período");
+          setData([]);
+        } else {
+          setData(vendas);
+        }
+      } catch {
+        setError("Erro inesperado");
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchInfo(ano);
+  }, [ano]);
 
   return (
-    <section className="section *:mb-3">
-      <h1 className="flex flex-col sm:flex-row md:gap-2 text-3xl sm:text-4xl md:text-5xl font-roboto w-max justify-start font-semibold">
-        <p>Bem Vindo:</p> <span>{session?.user.name}</span>
+    <section className="section">
+      <h1 className="titulo lg:mt-2 mb-2 md:mb-6 flex flex-col md:flex-row items-baseline gap-1">
+        Vendas
+        <span className="md:text-xl text-sm">
+          ({vendasFiltradas.length} encontrada
+          {vendasFiltradas.length !== 1 ? "s" : ""})
+        </span>
       </h1>
-      <div className="flex gap-10">
-        <div className="flex-col text-lg sm:text-lg md:text-lg font-roboto">
-          <p>Seu email é:</p>
-          <span className="ml-5">{session?.user.email}</span>
-        </div>
-        <div className="flex-col  text-lg sm:text-lg md:text-lg font-roboto">
-          <p>Seu Cargo é de:</p>
-          <span className="ml-5">{session?.user.role}</span>
-        </div>
-      </div>
+
       <div className="flex gap-4 text-lg mb-6 flex-wrap items-end">
+        {/* Seletor de Ano */}
         <div>
-          <label className="block font-medium mb-1" htmlFor="selecionar-ano">
-            Ano
-          </label>
+          <label className="block font-medium mb-1">Ano</label>
           <select
             value={ano}
-            name="selecionar-ano"
-            id="selecionar-ano"
             onChange={(e) => handleAno(Number(e.target.value))}
-            disabled={isLoading}
-            className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            disabled={loading}
+            className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {anosDisponiveis.map((a) => (
               <option key={a} value={a}>
@@ -175,15 +163,12 @@ export default function PerfilPage() {
           </select>
         </div>
 
+        {/* Combobox Mês */}
         <div className="relative">
-          <label className="block font-medium mb-1" htmlFor="selecionar-mes">
-            Mês
-          </label>
+          <label className="block font-medium mb-1">Mês</label>
           <div className="relative">
             <input
               type="text"
-              name="selecionar-mes"
-              id="selecionar-mes"
               value={comboboxMes.search}
               onChange={(e) => comboboxMes.setSearch(e.target.value)}
               onFocus={() => comboboxMes.setOpen(true)}
@@ -198,7 +183,6 @@ export default function PerfilPage() {
                 onClick={comboboxMes.handleClear}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 type="button"
-                aria-label="Limpar seleção de mês"
               >
                 ✕
               </button>
@@ -224,15 +208,12 @@ export default function PerfilPage() {
           )}
         </div>
 
+        {/* Combobox Dia */}
         <div className="relative">
-          <label className="block font-medium mb-1" htmlFor="selecionar-dia">
-            Dia
-          </label>
+          <label className="block font-medium mb-1">Dia</label>
           <div className="relative">
             <input
               type="text"
-              name="selecionar-dia"
-              id="selecionar-dia"
               value={comboboxDia.search}
               onChange={(e) => comboboxDia.setSearch(e.target.value)}
               onFocus={() => comboboxDia.setOpen(true)}
@@ -250,7 +231,6 @@ export default function PerfilPage() {
                 onClick={comboboxDia.handleClear}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 type="button"
-                aria-label="Limpar seleção de dia"
               >
                 ✕
               </button>
@@ -276,6 +256,7 @@ export default function PerfilPage() {
           )}
         </div>
 
+        {/* Botão Limpar Filtros */}
         {(comboboxMes.selected || comboboxDia.selected) && (
           <div>
             <button
@@ -285,7 +266,6 @@ export default function PerfilPage() {
               }}
               className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
               type="button"
-              aria-label="Limpar todos os filtros de data"
             >
               Limpar filtros
             </button>
@@ -293,13 +273,23 @@ export default function PerfilPage() {
         )}
       </div>
 
-      {isLoading && <p className="text-gray-600">Carregando vendas...</p>}
-
-      {errorMessage && !isLoading && (
-        <p className="text-gray-600">{errorMessage}</p>
+      {/* Estado de loading */}
+      {loading && (
+        <div className="flex items-center gap-2 text-blue-600">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+          Carregando...
+        </div>
       )}
 
-      {!isLoading && !errorMessage && vendasFiltradas.length > 0 && (
+      {/* Estado de error */}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      {/* Lista de vendas */}
+      {!loading && !error && vendasFiltradas.length > 0 && (
         <ul className=" *:border-b-1 [&>*:last-child]:border-b-0 mb-2">
           {vendasFiltradas.map((venda) => (
             <li key={venda.id}>
@@ -323,6 +313,15 @@ export default function PerfilPage() {
           ))}
         </ul>
       )}
+
+      {!loading &&
+        !error &&
+        vendasFiltradas.length === 0 &&
+        data.length > 0 && (
+          <div className="text-center text-gray-600 py-8">
+            Nenhuma venda encontrada com os filtros aplicados
+          </div>
+        )}
     </section>
   );
 }

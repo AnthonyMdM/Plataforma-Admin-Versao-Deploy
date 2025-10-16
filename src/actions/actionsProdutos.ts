@@ -251,10 +251,10 @@ export async function updateProduto(
       },
       data: {
         Nome: nome,
-        preco: valor, 
+        preco: valor,
       },
     });
-
+    revalidatePath(`/produtos/${idProduto}`);
     return {
       success: true,
       errors: [],

@@ -67,6 +67,4 @@ view vendas_telas {
 enum Role {
   FUNCIONARIO
   ADMINISTRADOR
-  DESENVOLVEDOR
-  CLIENTE
 }

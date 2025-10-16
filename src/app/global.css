@@ -25,7 +25,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .main {
-  @apply bg-gray-200 mx-auto px-6 py-8 flex flex-col items-center lg:items-stretch w-full h-full text-black overflow-auto;
+  @apply bg-gray-200 mx-auto px-6 pt-4 pb-8 flex flex-col items-center lg:items-stretch w-full h-full text-black overflow-auto;
 }
 
 .section {
@@ -94,4 +94,18 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+}
+/* Scrollbar custom */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(107, 114, 128, 0.7); /* Tailwind gray-500 */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(75, 85, 99, 0.8); /* gray-600 */
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }
