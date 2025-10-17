@@ -1,4 +1,4 @@
-import Credentials from "@auth/core/providers/credentials";
+import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import NextAuth from "next-auth";
 import { getFindLogin } from "@/actions/actionsAccount";
@@ -70,7 +70,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  // pages: {
-  //   signIn: "/login",
-  // },
+  pages: {
+    signIn: "/login",
+  },
 });
