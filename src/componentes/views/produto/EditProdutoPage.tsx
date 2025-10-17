@@ -107,7 +107,7 @@ export default function PageEditProduto({ produto }: ProdutoP) {
               />
             </div>
           </div>
-          <form onClick={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <input type="hidden" name="idProduto" value={produto.id} />
             <input type="hidden" name="valor" value={preco} />
             <input type="hidden" name="nome" value={nome} />

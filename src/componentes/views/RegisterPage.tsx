@@ -36,7 +36,7 @@ export default function PageRegister() {
           Preencha as informações do novo Funcionário
         </p>
       </header>
-      <form className="w-full md:min-w-2xl" onClick={handleSubmit}>
+      <form className="w-full md:min-w-2xl" onSubmit={handleSubmit}>
         <div className="divForm !flex sm:flex-row flex-col flex-wrap *:min-w-xs items-center">
           <div>
             <label htmlFor="nome" className="font-medium">

@@ -51,7 +51,7 @@ export default function ProdutoCreate() {
       <form
         ref={formRef}
         className="space-y-6 font-sans"
-        onClick={handleSubmit}
+        onSubmit={handleSubmit}
       >
         <div className="divForm !grid-col">
           <div>

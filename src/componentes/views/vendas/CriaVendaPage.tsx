@@ -459,7 +459,11 @@ export default function VendasCreate() {
         </div>
       )}
 
-      <form ref={formRef} className="space-y-6 font-sans" onClick={handleSubmit}>
+      <form
+        ref={formRef}
+        className="space-y-6 font-sans"
+        onSubmit={handleSubmit}
+      >
         <input
           type="hidden"
           id="idUser"
