@@ -114,27 +114,14 @@ export async function getFindLogin(email: string) {
   });
 }
 
-export async function actionLogin(
-  state: FormState,
-  formData: FormData
-): Promise<FormState> {
-  try {
-    const res = await signIn("credentials", {
-      redirect: false,
-      email: formData.get("email"),
-      password: formData.get("password"),
-    });
+export async function actionLogin(formData: FormData) {
+  const res = await signIn("credentials", {
+    redirect: false, // evita NEXT_REDIRECT
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-    if (res?.error) {
-      return { success: false, errors: [res.error] };
-    }
-
-    if (res?.ok) {
-      window.location.href = "/perfil";
-    }
-
-    return { success: true, errors: [] };
-  } catch (error: any) {
-    return { success: false, errors: [error.message || "Erro ao fazer login"] };
+  if (res?.ok) {
+    window.location.href = "/perfil";
   }
 }

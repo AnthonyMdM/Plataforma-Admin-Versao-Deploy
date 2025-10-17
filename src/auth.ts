@@ -1,7 +1,7 @@
 import Credentials from "@auth/core/providers/credentials";
 import bcrypt from "bcrypt";
 import NextAuth from "next-auth";
-import { getFindLogin } from "@/actions/actionsAccount";
+// import { getFindLogin } from "@/actions/actionsAccount";
 import { prisma } from "./lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
