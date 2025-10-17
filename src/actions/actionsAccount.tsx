@@ -116,12 +116,8 @@ export async function getFindLogin(email: string) {
 
 export async function actionLogin(formData: FormData) {
   const res = await signIn("credentials", {
-    redirect: false, // evita NEXT_REDIRECT
+    redirect: false, 
     email: formData.get("email"),
     password: formData.get("password"),
   });
-
-  if (res?.ok) {
-    window.location.href = "/perfil";
-  }
 }
