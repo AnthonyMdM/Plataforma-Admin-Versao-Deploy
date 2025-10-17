@@ -22,11 +22,15 @@ export default function Page() {
       redirect: false,
     });
 
-    if (!result || result.error) {
+    if (result?.error) {
       setErrors(["Email ou senha incorretos"]);
       return;
     }
 
+    if (result?.ok) {
+      router.push("/perfil");
+      router.refresh(); // força atualização da sessão
+    }
     router.push("/perfil"); // redireciona para /perfil
   };
 

@@ -1,10 +1,12 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { Produto, ProdutosMaisVendidos as ProdutoMais } from "@prisma/client";
 import { FormState } from "@/types/tyeps-global";
+
+const prisma = new PrismaClient();
 
 const produtoSchema = z.object({
   nome: z

@@ -1,12 +1,13 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 import { Role } from "@prisma/client";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { signIn } from "@/auth";
-import { redirect } from "next/navigation";
 import { FormState } from "@/types/tyeps-global";
+
+const prisma = new PrismaClient();
 
 const registerSchema = z.object({
   nome: z
@@ -118,28 +119,25 @@ export async function actionLogin(
   formData: FormData
 ): Promise<FormState> {
   try {
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: false,
+      redirectTo: "/perfil",
     });
 
-    if (!result || result.error) {
-      return {
-        success: false,
-        errors: ["Email ou senha incorretos"],
-      };
-    }
-
-    redirect("/perfil");
+    return {
+      success: true,
+      errors: [],
+    };
   } catch (error: any) {
+    // Next.js lança erro NEXT_REDIRECT quando redirect é bem-sucedido
     if (error.message?.includes("NEXT_REDIRECT")) {
       throw error;
     }
 
     return {
       success: false,
-      errors: ["Erro ao fazer login. Tente novamente."],
+      errors: [error.message || "Erro ao fazer login"],
     };
   }
 }

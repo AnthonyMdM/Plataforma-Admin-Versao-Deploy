@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import "@/app/global.css";
-
+import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -30,7 +30,7 @@ export default async function RootLayout({
         className={`${poppins.variable} ${roboto.variable} flex h-screen overflow`}
       >
         <>
-          {children}
+          <SessionProvider>{children}</SessionProvider>
         </>
       </body>
     </html>

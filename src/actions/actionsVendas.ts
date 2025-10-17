@@ -1,10 +1,12 @@
 "use server";
 
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 import { FormState } from "@/types/tyeps-global";
 import z from "zod";
 // import z, { number } from "zod";
+
+const prisma = new PrismaClient();
 
 const vendaSchema = z
   .object({
