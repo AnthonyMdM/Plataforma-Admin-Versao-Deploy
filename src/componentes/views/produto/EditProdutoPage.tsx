@@ -1,8 +1,8 @@
 "use client";
-import { updateProduto } from "@/actions/actionsProdutos";
+// import { updateProduto } from "@/actions/actionsProdutos";
 import ButtonForm from "@/componentes/global/ButtonForm";
 import React from "react";
-import FormFeedback from "@/componentes/global/FormFeedBack";
+// import FormFeedback from "@/componentes/global/FormFeedBack";
 import { formatCurrency, parseCurrency } from "@/utilidades/formatePreco";
 import { Produto } from "@prisma/client";
 
@@ -17,10 +17,14 @@ export default function PageEditProduto({ produto }: ProdutoP) {
   );
   const [preco, setPreco] = React.useState(produto.preco);
 
-  const [state, formAction] = React.useActionState(updateProduto, {
-    errors: [],
-    success: false,
-  });
+  // const [state, formAction] = React.useActionState(updateProduto, {
+  //   errors: [],
+  //   success: false,
+  // });
+
+  const handleSubmit = React.useCallback(() => {
+    alert("⚠️ Não é possível realizar operações de escrita na Vercel.");
+  }, []);
 
   return (
     <main className="main md:!items-center">
@@ -103,7 +107,7 @@ export default function PageEditProduto({ produto }: ProdutoP) {
               />
             </div>
           </div>
-          <form action={formAction}>
+          <form onClick={handleSubmit}>
             <input type="hidden" name="idProduto" value={produto.id} />
             <input type="hidden" name="valor" value={preco} />
             <input type="hidden" name="nome" value={nome} />
@@ -112,7 +116,7 @@ export default function PageEditProduto({ produto }: ProdutoP) {
               <ButtonForm />
             </div>
           </form>
-          <FormFeedback state={state} />
+          {/* <FormFeedback state={state} /> */}
         </div>
       </section>
     </main>

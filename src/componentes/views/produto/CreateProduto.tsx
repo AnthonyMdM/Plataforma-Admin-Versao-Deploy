@@ -1,9 +1,9 @@
 "use client";
 
-import { createProduto } from "@/actions/actionsProdutos";
+// import { createProduto } from "@/actions/actionsProdutos";
 import React from "react";
 import { unidades } from "@/componentes/views/produto/unidadesProdutos";
-import FormFeedback from "@/componentes/global/FormFeedBack";
+// import FormFeedback from "@/componentes/global/FormFeedBack";
 import ButtonForm from "@/componentes/global/ButtonForm";
 import useCombobox from "@/hooks/useCombobox";
 
@@ -11,24 +11,28 @@ export default function ProdutoCreate() {
   const formRef = React.useRef<HTMLFormElement>(null);
   const combobox = useCombobox(unidades);
 
-  const [state, formAction] = React.useActionState(createProduto, {
-    errors: [],
-    success: false,
-  });
+  // const [state, formAction] = React.useActionState(createProduto, {
+  //   errors: [],
+  //   success: false,
+  // });
 
-  React.useEffect(() => {
-    if (state.success && formRef.current) {
-      formRef.current.reset();
-      combobox.reset();
-    }
-  }, [state.success, combobox]);
+  // React.useEffect(() => {
+  //   if (state.success && formRef.current) {
+  //     formRef.current.reset();
+  //     combobox.reset();
+  //   }
+  // }, [state.success, combobox]);
 
-  const handleSubmit = React.useCallback(
-    (formData: FormData) => {
-      formAction(formData);
-    },
-    [formAction]
-  );
+  // const handleSubmit = React.useCallback(
+  //   (formData: FormData) => {
+  //     formAction(formData);
+  //   },
+  //   [formAction]
+  // );
+
+  const handleSubmit = React.useCallback(() => {
+    alert("⚠️ Não é possível realizar operações de escrita na Vercel.");
+  }, []);
 
   const focusedId =
     combobox.focusedIndex >= 0
@@ -44,7 +48,11 @@ export default function ProdutoCreate() {
         <p className="text-gray-600">Preencha as informações do novo produto</p>
       </header>
 
-      <form ref={formRef} className="space-y-6 font-sans" action={handleSubmit}>
+      <form
+        ref={formRef}
+        className="space-y-6 font-sans"
+        onClick={handleSubmit}
+      >
         <div className="divForm !grid-col">
           <div>
             <label htmlFor="nome">Nome do Produto *</label>
@@ -241,7 +249,7 @@ export default function ProdutoCreate() {
         </div>
       </form>
 
-      <FormFeedback state={state} />
+      {/* <FormFeedback state={state} /> */}
     </section>
   );
 }

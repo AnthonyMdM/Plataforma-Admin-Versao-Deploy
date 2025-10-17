@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
-import { createUser } from "@/actions/actionsAccount";
+import React, { useCallback } from "react";
+// import { createUser } from "@/actions/actionsAccount";
 import useCombobox from "@/hooks/useCombobox";
 import ButtonForm from "@/componentes/global/ButtonForm";
-import FormFeedback from "@/componentes/global/FormFeedBack";
+// import FormFeedback from "@/componentes/global/FormFeedBack";
 
 export default function PageRegister() {
   const RoleValues = {
@@ -11,17 +11,19 @@ export default function PageRegister() {
     Administrador: "ADMINISTRADOR",
   } as const;
   const combobox = useCombobox(RoleValues);
-  const [state, formAction] = React.useActionState(createUser, {
-    errors: [],
-    success: false,
-  });
-  const handleSubmit = React.useCallback(
-    (formData: FormData) => {
-      formAction(formData);
-    },
-    [formAction]
-  );
-
+  // const [state, formAction] = React.useActionState(createUser, {
+  //   errors: [],
+  //   success: false,
+  // });
+  // const handleSubmit = React.useCallback(
+  //   (formData: FormData) => {
+  //     formAction(formData);
+  //   },
+  //   [formAction]
+  // );
+  const handleSubmit = useCallback(() => {
+    alert("⚠️ Não é possível realizar operações de escrita na Vercel.");
+  }, []);
   const focusedId =
     combobox.focusedIndex >= 0
       ? `role-option-${combobox.availableOptions[combobox.focusedIndex]?.[1]}`
@@ -34,7 +36,7 @@ export default function PageRegister() {
           Preencha as informações do novo Funcionário
         </p>
       </header>
-      <form className="w-full md:min-w-2xl" action={handleSubmit}>
+      <form className="w-full md:min-w-2xl" onClick={handleSubmit}>
         <div className="divForm !flex sm:flex-row flex-col flex-wrap *:min-w-xs items-center">
           <div>
             <label htmlFor="nome" className="font-medium">
@@ -228,7 +230,7 @@ export default function PageRegister() {
           </div>
         </div>
         <div className="flex justify-end pt-4 border-t border-gray-100 mt-5">
-          <FormFeedback state={state} />
+          {/* <FormFeedback state={state} /> */}
           <ButtonForm />
         </div>
       </form>

@@ -3,7 +3,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { FormState } from "@/types/tyeps-global";
-import z, { number } from "zod";
+import z from "zod";
+// import z, { number } from "zod";
 
 const vendaSchema = z
   .object({

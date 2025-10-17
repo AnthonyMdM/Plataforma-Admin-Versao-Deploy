@@ -1,13 +1,13 @@
 "use client";
 import { getProdutos } from "@/actions/actionsProdutos";
 import React from "react";
-import FormFeedback from "@/componentes/global/FormFeedBack";
+// import FormFeedback from "@/componentes/global/FormFeedBack";
 import ButtonForm from "@/componentes/global/ButtonForm";
 import useCombobox from "@/hooks/useCombobox";
 import useSWR from "swr";
 import { formatCurrency } from "@/utilidades/formatePreco";
 import Image from "next/image";
-import { createVenda } from "@/actions/actionsVendas";
+// import { createVenda } from "@/actions/actionsVendas";
 import { useSession } from "next-auth/react";
 
 const fetcher = async () => {
@@ -37,10 +37,10 @@ export default function VendasCreate() {
   const formRef = React.useRef<HTMLFormElement>(null);
   const combobox = useCombobox(optionsRecord);
 
-  const [state, formAction] = React.useActionState(createVenda, {
-    errors: [],
-    success: false,
-  });
+  // const [state, formAction] = React.useActionState(createVenda, {
+  //   errors: [],
+  //   success: false,
+  // });
   React.useEffect(() => {
     const dados = localStorage.getItem("lista");
     if (dados) setItens(JSON.parse(dados));
@@ -50,24 +50,24 @@ export default function VendasCreate() {
     localStorage.setItem("lista", JSON.stringify(itens));
   }, [itens]);
 
-  React.useEffect(() => {
-    if (state.success && formRef.current) {
-      formRef.current.reset();
-      combobox.reset();
-      setItens([]);
-      setQuant("1");
-      setPreco("R$ 0,00");
-      setPrecoTotal("R$ 0,00");
-      setUnid("Kg");
-    }
-  }, [state.success]);
+  // React.useEffect(() => {
+  //   if (state.success && formRef.current) {
+  //     formRef.current.reset();
+  //     combobox.reset();
+  //     setItens([]);
+  //     setQuant("1");
+  //     setPreco("R$ 0,00");
+  //     setPrecoTotal("R$ 0,00");
+  //     setUnid("Kg");
+  //   }
+  // }, [state.success]);
 
-  const handleSubmit = React.useCallback(
-    (formData: FormData) => {
-      formAction(formData);
-    },
-    [formAction]
-  );
+  // const handleSubmit = React.useCallback(
+  //   (formData: FormData) => {
+  //     formAction(formData);
+  //   },
+  //   [formAction]
+  // );
 
   const focusedId =
     combobox.focusedIndex >= 0
@@ -96,7 +96,9 @@ export default function VendasCreate() {
     }, 0);
     setValorTotalVenda(total);
   }, [itens]);
-
+  const handleSubmit = React.useCallback(() => {
+    alert("⚠️ Não é possível realizar operações de escrita na Vercel.");
+  }, []);
   return (
     <section className="section">
       <header className="mb-6">
@@ -457,7 +459,7 @@ export default function VendasCreate() {
         </div>
       )}
 
-      <form ref={formRef} className="space-y-6 font-sans" action={handleSubmit}>
+      <form ref={formRef} className="space-y-6 font-sans" onClick={handleSubmit}>
         <input
           type="hidden"
           id="idUser"
@@ -491,7 +493,7 @@ export default function VendasCreate() {
         </div>
       </form>
 
-      <FormFeedback state={state} />
+      {/* <FormFeedback state={state} /> */}
     </section>
   );
 }
