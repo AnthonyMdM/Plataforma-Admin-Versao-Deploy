@@ -17,7 +17,6 @@ export default function Page() {
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
-    console.log("🔍 [LOGIN] Tentando fazer login...");
 
     try {
       const result = await signIn("credentials", {
@@ -26,32 +25,22 @@ export default function Page() {
         redirect: false,
       });
 
-      console.log("🔍 [LOGIN] Resultado:", result);
 
       if (!result) {
-        console.log("❌ [LOGIN] Resultado undefined");
         setErrors(["Erro ao fazer login"]);
         setIsLoading(false);
         return;
       }
 
       if (result.error) {
-        console.log("❌ [LOGIN] Erro:", result.error);
         setErrors(["Email ou senha incorretos"]);
         setIsLoading(false);
         return;
       }
 
-      if (result.ok) {
-        console.log("✅ [LOGIN] Login bem-sucedido, redirecionando...");
-        return;
-      }
-
-      console.log("❌ [LOGIN] Status desconhecido");
       setErrors(["Erro inesperado"]);
       setIsLoading(false);
     } catch (error) {
-      console.error("❌ [LOGIN] Erro no catch:", error);
       setErrors(["Erro ao fazer login"]);
       setIsLoading(false);
     }
