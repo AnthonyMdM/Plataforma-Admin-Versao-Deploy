@@ -20,14 +20,14 @@ model User {
 model Venda {
   id            Int             @id @default(autoincrement())
   userId        Int
-  data          DateTime  @default(now())
+  data          DateTime        @default(now())
   user          User            @relation(fields: [userId], references: [id])
   venda_produto venda_produto[]
 }
 
 model Produto {
   id             Int             @id @default(autoincrement())
-  Nome   String
+  Nome           String
   unidadePesagem String
   preco          Int
   perecivel      Boolean
@@ -40,17 +40,17 @@ model venda_produto {
   vendaId                  Int
   quantidade               Float
   preco_unitario           Int
-  preco_produto_totaltotal     Int
-  Venda                    Venda   @relation(fields: [vendaId], references: [id])
+  preco_produto_totaltotal Int
   Produto                  Produto @relation(fields: [produtoId], references: [id])
+  Venda                    Venda   @relation(fields: [vendaId], references: [id])
 }
 
 view ProdutosMaisVendidos {
   produtoId      Int?
   nome           String?
   unidadePesagem String?
-  total_vendido  Int?
-  valor_total    Int?
+  total_vendido  Unsupported("")?
+  valor_total    Unsupported("")?
 }
 
 view vendas_telas {
@@ -60,7 +60,7 @@ view vendas_telas {
   nome_produto             String?
   preco                    Int?
   unidadePesagem           String?
-  quantidade               Int?
+  quantidade               Float?
   preco_produto_totaltotal Int?
 }
 

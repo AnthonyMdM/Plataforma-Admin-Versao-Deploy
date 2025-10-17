@@ -70,30 +70,34 @@ export default function SideBar() {
               height={40}
             />
           </Link>
-          <Link
-            href={"/produtos"}
-            className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
-            aria-label="Ir para Produtos"
-          >
-            <Image
-              src="/novoProduto.svg"
-              alt="Ir para Produtos"
-              width={40}
-              height={40}
-            />
-          </Link>
-          <Link
-            href={"/register"}
-            className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
-            aria-label="Ir para Cadastro"
-          >
-            <Image
-              src="/registrar.svg"
-              alt="Ir para Cadastro"
-              width={40}
-              height={40}
-            />
-          </Link>
+          {session?.user.role === "ADMINISTRADOR" && (
+            <>
+              <Link
+                href={"/produtos"}
+                className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
+                aria-label="Ir para Produtos"
+              >
+                <Image
+                  src="/novoProduto.svg"
+                  alt="Ir para Produtos"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+              <Link
+                href={"/register"}
+                className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"
+                aria-label="Ir para Cadastro"
+              >
+                <Image
+                  src="/registrar.svg"
+                  alt="Ir para Cadastro"
+                  width={40}
+                  height={40}
+                />
+              </Link>
+            </>
+          )}
           <button
             onClick={handleLogout}
             className="cursor-pointer mx-2 flex items-center justify-center lg:w-14 lg:h-14 rounded-full hover:bg-black transition-colors"

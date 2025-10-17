@@ -1,11 +1,15 @@
 SELECT
-  vp.produtoId,
-  p.nome_produto AS nome,
-  p.unidadePesagem,
-  CAST(SUM(vp.quantidade) AS INTEGER) AS total_vendido,
-  CAST(SUM(vp.preco_produto_totaltotal) AS INTEGER) AS valor_total
+  p.id AS produtoId,
+  p.Nome AS nome,
+  p.unidadePesagem AS unidadePesagem,
+  SUM(vp.quantidade) AS total_vendido,
+  SUM(vp.preco_produto_totaltotal) AS valor_total
 FROM
-  venda_produto AS vp
-  JOIN Produto AS p ON p.id = vp.produtoId
+  Produto AS p
+  JOIN venda_produto AS vp ON vp.produtoId = p.id
 GROUP BY
-  vp.produtoId;
+  p.id,
+  p.Nome,
+  p.unidadePesagem
+ORDER BY
+  total_vendido DESC;
