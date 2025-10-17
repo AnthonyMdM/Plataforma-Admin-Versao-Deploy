@@ -7,7 +7,7 @@ import useCombobox from "@/hooks/useCombobox";
 import { useSession } from "next-auth/react";
 
 async function fetcher([_, id]: [string, string]) {
-  return await getVendasUserId(+id);
+  return await getVendasUserId(id);
 }
 
 export default function PerfilPage() {

@@ -192,12 +192,25 @@ export async function getIdVendas() {
   return vendas;
 }
 
-export async function getVendasUserId(id: number) {
-  const vendas = await prisma.venda.findMany({
-    where: {
-      userId: { equals: id },
-    },
-  });
+export async function getVendasUserId(id: string) {
+  try {
+    const userId = parseInt(id, 10);
 
-  return { vendas };
+    if (isNaN(userId)) {
+      throw new Error("ID de usuário inválido");
+    }
+
+    const vendas = await prisma.venda.findMany({
+      where: {
+        userId: userId,
+      },
+      orderBy: {
+        data: "desc",
+      },
+    });
+
+    return { vendas };
+  } catch (e) {
+    return null;
+  }
 }
