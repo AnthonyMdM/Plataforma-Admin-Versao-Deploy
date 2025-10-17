@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       credentials: {
@@ -12,32 +13,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email e senha são obrigatórios");
+          return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email as string },
+          });
 
-        if (!user) {
-          throw new Error("Credenciais inválidas");
+          if (!user) {
+            return null;
+          }
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password as string,
+            user.hashedPassword
+          );
+
+          if (!isPasswordValid) {
+            return null;
+          }
+
+          return {
+            id: String(user.id),
+            email: user.email,
+            name: user.Name,
+            role: user.Role,
+          };
+        } catch (error) {
+          console.error("Erro ao autenticar:", error);
+          return null;
         }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password as string,
-          user.hashedPassword
-        );
-
-        if (!isPasswordValid) {
-          throw new Error("Credenciais inválidas");
-        }
-
-        return {
-          id: user.id.toString(),
-          email: user.email,
-          name: user.Name,
-          role: user.Role,
-        };
       },
     }),
   ],
@@ -63,4 +69,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
+  trustHost: true,
 });

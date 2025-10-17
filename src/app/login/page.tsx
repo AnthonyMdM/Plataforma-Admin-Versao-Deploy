@@ -3,35 +3,39 @@
 import ButtonForm from "@/componentes/global/ButtonForm";
 import React from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [errors, setErrors] = React.useState<string[]>([]);
-  const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
+    setErrors([]);
 
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setErrors(["Email ou senha incorretos"]);
-      return;
-    }
+      if (!result?.ok || result?.error) {
+        setErrors(["Email ou senha incorretos"]);
+        setIsLoading(false);
+        return;
+      }
 
-    if (result?.ok) {
-      router.push("/perfil");
-      router.refresh(); // força atualização da sessão
+      // Redireciona manualmente se o login for bem-sucedido
+      window.location.href = "/perfil";
+    } catch (error) {
+      setErrors(["Erro ao fazer login"]);
+      setIsLoading(false);
     }
-    router.push("/perfil"); // redireciona para /perfil
   };
 
   return (
@@ -44,11 +48,23 @@ export default function Page() {
           <div className="divForm !gap-4 mb-5 !grid-rows-2 !grid-cols-1">
             <div>
               <label htmlFor="email">Email</label>
-              <input type="email" id="email" name="email" required />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                disabled={isLoading}
+              />
             </div>
             <div>
               <label htmlFor="password">Senha</label>
-              <input type="password" id="password" name="password" required />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                disabled={isLoading}
+              />
             </div>
             {errors.length > 0 &&
               errors.map((err, i) => (
@@ -57,7 +73,8 @@ export default function Page() {
                 </p>
               ))}
           </div>
-          <ButtonForm />
+          <ButtonForm/>
+          {isLoading && <p className="mt-2 text-gray-600">Entrando...</p>}
         </form>
       </section>
     </main>
