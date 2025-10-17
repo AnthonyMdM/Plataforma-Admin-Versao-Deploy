@@ -108,8 +108,22 @@ export async function createUser(
 }
 
 export async function getFindLogin(email: string) {
-  const user = await prisma.user.findUnique({ where: { email } });
-  return user;
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        Name: true,
+        email: true,
+        Role: true,
+        hashedPassword: true,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.error("Erro ao buscar usuário:", error);
+    return null;
+  }
 }
 
 export async function actionLogin(
