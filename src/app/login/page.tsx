@@ -38,8 +38,6 @@ export default function Page() {
         return;
       }
 
-      setErrors(["Erro inesperado"]);
-      setIsLoading(false);
     } catch (error) {
       setErrors(["Erro ao fazer login"]);
       setIsLoading(false);
