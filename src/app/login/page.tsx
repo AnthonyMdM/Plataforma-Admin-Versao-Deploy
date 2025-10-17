@@ -17,6 +17,8 @@ export default function Page() {
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
+    console.log("🔍 [LOGIN] Tentando fazer login...");
+
     try {
       const result = await signIn("credentials", {
         email,
@@ -24,15 +26,33 @@ export default function Page() {
         redirect: false,
       });
 
-      if (!result?.ok || result?.error) {
+      console.log("🔍 [LOGIN] Resultado:", result);
+
+      if (!result) {
+        console.log("❌ [LOGIN] Resultado undefined");
+        setErrors(["Erro ao fazer login"]);
+        setIsLoading(false);
+        return;
+      }
+
+      if (result.error) {
+        console.log("❌ [LOGIN] Erro:", result.error);
         setErrors(["Email ou senha incorretos"]);
         setIsLoading(false);
         return;
       }
 
-      // Redireciona manualmente se o login for bem-sucedido
-      window.location.href = "/perfil";
+      if (result.ok) {
+        console.log("✅ [LOGIN] Login bem-sucedido, redirecionando...");
+        window.location.href = "/perfil";
+        return;
+      }
+
+      console.log("❌ [LOGIN] Status desconhecido");
+      setErrors(["Erro inesperado"]);
+      setIsLoading(false);
     } catch (error) {
+      console.error("❌ [LOGIN] Erro no catch:", error);
       setErrors(["Erro ao fazer login"]);
       setIsLoading(false);
     }
@@ -73,7 +93,7 @@ export default function Page() {
                 </p>
               ))}
           </div>
-          <ButtonForm/>
+          <ButtonForm />
           {isLoading && <p className="mt-2 text-gray-600">Entrando...</p>}
         </form>
       </section>
