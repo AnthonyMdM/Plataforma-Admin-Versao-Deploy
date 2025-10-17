@@ -1,55 +1,63 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import Credentials from "@auth/core/providers/credentials";
 import bcrypt from "bcrypt";
-import { prisma } from "@/lib/prisma";
+import NextAuth from "next-auth";
+import { getFindLogin } from "@/actions/actionsAccount";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24,
+  },
+  jwt: {
+    maxAge: 60 * 60 * 24,
+  },
   providers: [
     Credentials({
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
         try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email as string },
-          });
+          const email = credentials?.email as string;
+          const password = credentials?.password as string;
 
-          if (!user) {
+          if (!email || !password) {
+            console.log("Email ou senha não fornecidos");
             return null;
           }
 
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password as string,
-            user.hashedPassword
-          );
+          const user = await getFindLogin(email);
 
-          if (!isPasswordValid) {
+          if (!user || !user.hashedPassword) {
+            console.log("Usuário não encontrado ou sem senha");
             return null;
           }
+
+          const isValid = await bcrypt.compare(password, user.hashedPassword);
+
+          if (!isValid) {
+            console.log("Email ou Senha incorreto(a)");
+            return null;
+          }
+
           return {
             id: String(user.id),
-            email: user.email,
             name: user.Name,
+            email: user.email,
             role: user.Role,
           };
         } catch (error) {
+          console.error("Erro no authorize:", error);
           return null;
         }
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
-  },
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -57,29 +65,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-      }
-
+      session.user.id = token.id as string;
+      session.user.role = token.role as string;
       return session;
     },
   },
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 dias
-  },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
-  trustHost: true,
-  debug: process.env.NODE_ENV === "development",
+  // pages: {
+  //   signIn: "/login",
+  // },
 });
