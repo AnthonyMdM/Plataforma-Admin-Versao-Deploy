@@ -2,13 +2,22 @@
 
 import { actionLogin } from "@/actions/actionsAccount";
 import ButtonForm from "@/componentes/global/ButtonForm";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 export default function Page() {
   const [state, formAction, isPending] = useActionState(actionLogin, {
     errors: [],
     success: false,
   });
+
+  useEffect(() => {
+    async function redirect() {
+      if (state.success) {
+        window.location.href = "/perfil";
+      }
+    }
+    redirect();
+  }, [state]);
 
   return (
     <main className="main md:!items-center md:!justify-center">

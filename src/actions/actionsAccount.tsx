@@ -119,25 +119,23 @@ export async function actionLogin(
   formData: FormData
 ): Promise<FormState> {
   try {
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
+      redirect: false,
       email: formData.get("email"),
       password: formData.get("password"),
-      redirectTo: "/perfil",
     });
 
-    return {
-      success: true,
-      errors: [],
-    };
-  } catch (error: any) {
-    // Next.js lança erro NEXT_REDIRECT quando redirect é bem-sucedido
-    if (error.message?.includes("NEXT_REDIRECT")) {
-      throw error;
+    if (res?.error) {
+      return { success: false, errors: [res.error] };
     }
 
-    return {
-      success: false,
-      errors: [error.message || "Erro ao fazer login"],
-    };
+    // Redirecionamento manual
+    if (res?.ok) {
+      window.location.href = "/perfil";
+    }
+
+    return { success: true, errors: [] };
+  } catch (error: any) {
+    return { success: false, errors: [error.message || "Erro ao fazer login"] };
   }
 }

@@ -2,6 +2,7 @@ import Credentials from "@auth/core/providers/credentials";
 import bcrypt from "bcrypt";
 import NextAuth from "next-auth";
 import { getFindLogin } from "@/actions/actionsAccount";
+import { prisma } from "./lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -23,18 +24,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           const email = credentials?.email as string;
           const password = credentials?.password as string;
-
+          console.log("1");
           if (!email || !password) {
             console.log("Email ou senha não fornecidos");
             return null;
           }
 
-          const user = await getFindLogin(email);
+          const user = await prisma.user.findUnique({
+            where: { email },
+          });
 
           if (!user || !user.hashedPassword) {
             console.log("Usuário não encontrado ou sem senha");
             return null;
           }
+          console.log("2");
 
           const isValid = await bcrypt.compare(password, user.hashedPassword);
 
@@ -42,6 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.log("Email ou Senha incorreto(a)");
             return null;
           }
+          console.log("3");
 
           return {
             id: String(user.id),
