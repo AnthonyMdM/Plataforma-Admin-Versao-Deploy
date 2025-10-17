@@ -44,7 +44,6 @@ export default function Page() {
 
       if (result.ok) {
         console.log("✅ [LOGIN] Login bem-sucedido, redirecionando...");
-        window.location.href = "/perfil";
         return;
       }
 
