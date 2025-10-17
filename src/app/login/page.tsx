@@ -10,15 +10,6 @@ export default function Page() {
     success: false,
   });
 
-  useEffect(() => {
-    async function redirect() {
-      if (state.success) {
-        window.location.href = "/perfil";
-      }
-    }
-    redirect();
-  }, [state]);
-
   return (
     <main className="main md:!items-center md:!justify-center">
       <section className="section md:!max-w-[40%] md:!min-h-[60%] flex flex-col sm:items-center sm:justify-center">

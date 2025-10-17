@@ -119,15 +119,20 @@ export async function actionLogin(
   formData: FormData
 ): Promise<FormState> {
   try {
-    await signIn("credentials", {
-      redirect: true, // NextAuth fará o redirect automático
+    const res = await signIn("credentials", {
+      redirect: false,
       email: formData.get("email"),
       password: formData.get("password"),
-      callbackUrl: "/perfil", // destino após login
     });
 
-    // Se redirect: true, o código abaixo não será executado,
-    // mas podemos retornar estado inicial
+    if (res?.error) {
+      return { success: false, errors: [res.error] };
+    }
+
+    if (res?.ok) {
+      window.location.href = "/perfil";
+    }
+
     return { success: true, errors: [] };
   } catch (error: any) {
     return { success: false, errors: [error.message || "Erro ao fazer login"] };
