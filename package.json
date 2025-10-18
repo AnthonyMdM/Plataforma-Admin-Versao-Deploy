@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "prod:local": "NODE_ENV=production next build && NODE_ENV=production next start"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
