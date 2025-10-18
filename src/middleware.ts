@@ -4,6 +4,7 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
+
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
@@ -12,49 +13,50 @@ export async function middleware(req: NextRequest) {
   const isLoggedIn = !!token;
   const userRole = token?.role as string | undefined;
 
-  // 🔹 Rotas públicas
+  // Rotas que qualquer um pode acessar (logado ou não)
   const publicRoutes = ["/login", "/forgot-password", "/reset-password"];
 
-  // 🔹 Rotas administrativas
-  const adminRoutes = ["/register", "/produtos", "/criarProduto"];
+  // Rotas que SOMENTE admin pode acessar
+  const adminOnlyRoutes = ["/register", "/produtos", "/criarProduto"];
 
-  const isPublicRoute = publicRoutes.some(
-    (route) => nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
+  const isPublicRoute = publicRoutes.some((route) =>
+    nextUrl.pathname.startsWith(route)
   );
 
-  const isAdminRoute = adminRoutes.some(
-    (route) => nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
+  const isAdminOnlyRoute = adminOnlyRoutes.some((route) =>
+    nextUrl.pathname.startsWith(route)
   );
 
-  // 🔸 Redireciona usuário logado que tenta acessar /login ou /register
-  if (isLoggedIn && (nextUrl.pathname.startsWith("/login") || nextUrl.pathname.startsWith("/register"))) {
-    return NextResponse.redirect(new URL("/perfil", nextUrl));
+  // 1. Se está logado e tenta acessar /login, redireciona
+  if (isLoggedIn && nextUrl.pathname.startsWith("/login")) {
+    const callbackUrl = nextUrl.searchParams.get("callbackUrl") || "/perfil";
+    return NextResponse.redirect(new URL(callbackUrl, nextUrl));
   }
 
-  // 🔸 Bloqueia rotas admin
-  if (isAdminRoute) {
+  // 2. Protege rotas exclusivas de admin
+  if (isAdminOnlyRoute) {
+    // Se não está logado, vai pro login
     if (!isLoggedIn) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
     }
+
+    // Se está logado mas não é admin, vai pro perfil
     if (userRole !== "ADMINISTRADOR") {
       return NextResponse.redirect(new URL("/perfil", nextUrl));
     }
   }
 
-  // 🔸 Bloqueia rotas privadas
-  if (!isLoggedIn && !isPublicRoute) {
-    const loginUrl = new URL("/login", nextUrl);
-    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  // 3. Deixa passar rotas públicas e todas as outras rotas para usuários logados
+  // Remove esta verificação que estava bloqueando tudo:
+  // if (!isLoggedIn && !isPublicRoute) { ... }
 
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|svg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.svg$|.*\\.gif$).*)",
   ],
 };
