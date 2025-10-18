@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { getFindLogin } from "@/actions/actionsAccount";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
 
   session: {
     strategy: "jwt",
