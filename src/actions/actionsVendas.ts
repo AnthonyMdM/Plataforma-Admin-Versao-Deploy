@@ -165,7 +165,7 @@ export async function getVendas(idVendas: number, page: number, pageSize = 5) {
     take: pageSize,
     orderBy: { data: "desc" },
     where: {
-      id: { equals: idVendas },
+      id: idVendas,
     },
   });
 
@@ -192,7 +192,7 @@ export async function getIdVendas() {
 export async function getVendasUserId(id: number) {
   const vendas = await prisma.venda.findMany({
     where: {
-      userId: { equals: id },
+      userId: id,
     },
   });
 

@@ -4,34 +4,38 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id             Int     @id @default(autoincrement())
-  Name           String
-  email          String  @unique
-  hashedPassword String
-  Role           String
-  vendas         Venda[]
-}
-
-model Venda {
-  id            Int             @id @default(autoincrement())
-  userId        Int
-  data          DateTime        @default(now())
-  user          User            @relation(fields: [userId], references: [id])
-  venda_produto venda_produto[]
-}
-
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Produto {
   id             Int             @id @default(autoincrement())
-  Nome           String
-  unidadePesagem String
+  Nome           String          @db.VarChar(255)
+  unidadePesagem String          @db.VarChar(50)
   preco          Int
   perecivel      Boolean
   venda_produto  venda_produto[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model User {
+  id             Int     @id @default(autoincrement())
+  Name           String  @db.VarChar(255)
+  email          String  @unique @db.VarChar(255)
+  hashedPassword String  @db.VarChar(255)
+  Role           String  @db.VarChar(50)
+  Venda          Venda[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Venda {
+  id            Int             @id @default(autoincrement())
+  userId        Int
+  data          DateTime        @default(now()) @db.Timestamp(6)
+  User          User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  venda_produto venda_produto[]
 }
 
 model venda_produto {
@@ -41,25 +45,25 @@ model venda_produto {
   quantidade               Float
   preco_unitario           Int
   preco_produto_totaltotal Int
-  Produto                  Produto @relation(fields: [produtoId], references: [id])
-  Venda                    Venda   @relation(fields: [vendaId], references: [id])
+  Produto                  Produto @relation(fields: [produtoId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Venda                    Venda   @relation(fields: [vendaId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 view ProdutosMaisVendidos {
   produtoId      Int?
-  nome           String?
-  unidadePesagem String?
-  total_vendido  Unsupported("")?
-  valor_total    Unsupported("")?
+  nome           String? @db.VarChar(255)
+  unidadePesagem String? @db.VarChar(50)
+  total_vendido  Float?
+  valor_total    BigInt?
 }
 
 view vendas_telas {
   id                       Int?
-  Name                     String?
-  data                     DateTime?
-  nome_produto             String?
+  Name                     String?   @db.VarChar(255)
+  data                     DateTime? @db.Timestamp(6)
+  nome_produto             String?   @db.VarChar(255)
   preco                    Int?
-  unidadePesagem           String?
+  unidadePesagem           String?   @db.VarChar(50)
   quantidade               Float?
   preco_produto_totaltotal Int?
 }

@@ -1,12 +1,12 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { Role } from "@prisma/client";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
 import { FormState } from "@/types/tyeps-global";
+import { prisma } from "@/lib/prisma";
+import { Role } from "@prisma/client";
 
 const registerSchema = z.object({
   nome: z
