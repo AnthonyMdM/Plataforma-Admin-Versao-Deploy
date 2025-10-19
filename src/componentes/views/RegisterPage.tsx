@@ -28,13 +28,13 @@ export default function PageRegister() {
       : undefined;
   return (
     <section className="section !self-center !max-w-3xl">
-      <header className="mb-8">
-        <h1 className="titulo">Criar Novo Funcionário</h1>
-        <p className="text-gray-600">
+      <header className="mb-3 sm:mb-8">
+        <h1 className="titulo break-word !text-4xl">Criar Novo <span className="text-3xl">Funcionário</span></h1>
+        <p className="text-gray-600 hidden sm:block">
           Preencha as informações do novo Funcionário
         </p>
       </header>
-      <form className="w-full md:min-w-2xl" action={handleSubmit}>
+      <form className="w-full md:min-w-2xl **:max-w-[10rem] sm:**:max-w-none" action={handleSubmit}>
         <div className="divForm !flex sm:flex-row flex-col flex-wrap *:min-w-xs items-center">
           <div>
             <label htmlFor="nome" className="font-medium">

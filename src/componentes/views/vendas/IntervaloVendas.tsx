@@ -51,7 +51,7 @@ export default function VendasIntervalo() {
 
   return (
     <section className="section">
-      <h1 className="titulo mb-2 md:mb-6 flex flex-col items-baseline gap-1">
+      <h1 className="titulo mb-4 md:mb-6 flex flex-col items-baseline gap-1">
         Vendas
         <span className="md:text-xl text-sm">
           por Intervalo de Datas: ({vendas?.length ?? 0} encontrada
@@ -59,9 +59,9 @@ export default function VendasIntervalo() {
         </span>
       </h1>
 
-      <div className="border border-gray-300 p-4 rounded-lg mb-6">
-        <div className="flex gap-6 flex-wrap items-end">
-          <div className="flex-1 min-w-[200px]">
+      <div className="border border-gray-300 p-4 rounded-lg mb-4 sm:mb-6">
+        <div className="flex gap-6 flex-wrap items-end *:flex-1 *:sm:min-w-[200px]">
+          <div className="">
             <label className="block font-medium mb-1 text-sm text-green-700 lg:text-lg">
               Data Início
             </label>
@@ -73,7 +73,7 @@ export default function VendasIntervalo() {
             />
           </div>
 
-          <div className="flex-1 min-w-[200px]">
+          <div className="">
             <label className="block font-medium mb-1 text-sm lg:text-lg text-red-700">
               Data Fim
             </label>
@@ -87,7 +87,7 @@ export default function VendasIntervalo() {
         </div>
       </div>
 
-      <div className="flex gap-4 mb-6">
+      <div className="flex gap-4 mb-4 sm:mb-6">
         <button
           onClick={handleBuscarPorIntervalo}
           disabled={isLoading}
@@ -112,12 +112,9 @@ export default function VendasIntervalo() {
 
       {!isLoading && !error && vendas && vendas.length > 0 && (
         <div className="space-y-2">
-          <h2 className="font-medium text-gray-700">
-            Vendas encontradas no intervalo ({vendas.length} resultados):
-          </h2>
           {vendas.map((venda) => (
-            <Link href={`/venda/${venda.id}`} key={venda.id} className="p-4">
-              <div className="flex justify-between items-center px-6 py-5 w-full hover:bg-gray-100">
+            <Link href={`/venda/${venda.id}`} key={venda.id} className="p-0 sm:p-4">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:px-6 sm:py-5 w-full hover:bg-gray-100">
                 <span className="font-medium">Venda #{venda.id}</span>
                 <span className="text-gray-600">
                   {new Date(venda.data).toLocaleDateString("pt-BR", {

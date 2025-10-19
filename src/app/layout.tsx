@@ -27,7 +27,7 @@ export default async function RootLayout({
   return (
     <html lang="pt-Br">
       <body
-        className={`${poppins.variable} ${roboto.variable} flex h-screen overflow`}
+        className={`${poppins.variable} ${roboto.variable} flex h-screen overflow `}
       >
         <>
           {children}

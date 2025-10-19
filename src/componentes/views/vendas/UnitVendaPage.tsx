@@ -90,7 +90,7 @@ export default function VendasPageUnit({ params }: { params: string }) {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row md:flex-wrap *:min-w-[300px] justify-center w-auto text-center gap-4 lg:hidden mt-6">
+            <div className="flex flex-col md:flex-row md:flex-wrap sm:*:min-w-[300px] justify-center w-auto text-center gap-4 lg:hidden my-4">
               {vendas.map((item, i) => (
                 <div key={i} className="border rounded p-3 shadow-sm">
                   <p>

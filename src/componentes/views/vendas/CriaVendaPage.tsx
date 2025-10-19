@@ -99,17 +99,19 @@ export default function VendasCreate() {
 
   return (
     <section className="section">
-      <header className="mb-6">
+      <header className="sm:mb-6">
         <h1 className="titulo">Criar Venda</h1>
-        <p className="text-gray-600">Preencha as informações sobre a venda</p>
+        <p className="text-gray-600 hidden sm:block">
+          Preencha as informações sobre a venda
+        </p>
       </header>
 
       <div className="w-auto min-[900px]:w-max lg:w-auto">
         <p className="text-lg font-medium mb-2">Adicione um item a venda:</p>
         <div className="flex flex-wrap *:w-max *:md:w-auto md:grid md:grid-rows-2 md:grid-cols-7 gap-4 mb-6">
-          <div className="col-span-6 md:col-span-3 lg:col-span-3 space-y-2">
+          <div className="sm:col-span-6 md:col-span-3 lg:col-span-3 space-y-2 **:max-w-[10rem] sm:*:max-w-none">
             <label
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 "
               htmlFor="produto"
             >
               Produtos
@@ -119,7 +121,7 @@ export default function VendasCreate() {
                 type="text"
                 name="produto"
                 id="produto"
-                className="w-auto md:w-full px-3 py-2.5 border border-gray-300 rounded-lg 
+                className="sm:w-auto md:w-full px-3 py-2.5 border border-gray-300 rounded-lg 
            focus:outline-none focus:ring-2 focus:ring-blue-500 
            focus:border-transparent placeholder:text-gray-400 
            transition-colors pr-10"
@@ -385,7 +387,7 @@ export default function VendasCreate() {
         <div className="mt-6">
           <h3 className="text-lg font-medium mb-4">Itens da Venda</h3>
           <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <table className="w-full">
+            <table className="w-full hidden lg:block">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
@@ -443,8 +445,50 @@ export default function VendasCreate() {
                 })}
               </tbody>
             </table>
+            <div className="flex flex-col md:flex-row md:flex-wrap sm:*:min-w-[300px] justify-center w-auto text-center gap-4 lg:hidden mt-1">
+              {itens.map((item, i) => {
+                const produto = data?.data?.find(
+                  (p) => p.id === item.produtoId
+                );
+                return (
+                  <div key={i} className="border rounded p-3 shadow-sm">
+                    <p>
+                      <strong>Produto:</strong> {produto?.Nome}
+                    </p>
+                    <p>
+                      <strong>Quant.</strong> {item.quantidade}
+                    </p>
+                    <p>
+                      <strong>Preço Unit.:</strong>{" "}
+                      {formatCurrency(item.preco_unitario)}
+                    </p>
+                    <p>
+                      <strong>Total:</strong>{" "}
+                      {formatCurrency(item.quantidade * item.preco_unitario)}
+                    </p>
+                    <p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setItens(itens.filter((_, i) => i !== i))
+                        }
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Image
+                          src={"/delet.svg"}
+                          width={30}
+                          height={30}
+                          alt="deletar"
+                          className="cursor-pointer"
+                        />
+                      </button>
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
             <div className="bg-gray-50 px-4 py-4 border-t border-gray-200">
-              <div className="flex justify-evenly *:md:w-full items-center *:md:text-xl *:text-md max-w-md ml-auto">
+              <div className="flex flex-col sm:flex-row *:text-center md:justify-evenly *:md:w-full items-center *:md:text-xl *:text-md max-w-md ml-auto">
                 <span className="text-base text-right font-semibold text-gray-700">
                   Valor Total da Venda:
                 </span>

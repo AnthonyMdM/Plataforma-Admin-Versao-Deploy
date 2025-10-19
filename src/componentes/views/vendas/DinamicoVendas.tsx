@@ -145,7 +145,7 @@ export default function VendasDinamico() {
         </span>
       </h1>
 
-      <div className="flex gap-4 text-lg mb-6 flex-wrap items-end">
+      <div className="flex gap-4 text-lg mb-6 flex-wrap items-end **:max-w-[10rem] w-auto">
         {/* Seletor de Ano */}
         <div>
           <label className="block font-medium mb-1">Ano</label>
@@ -295,7 +295,7 @@ export default function VendasDinamico() {
             <li key={venda.id}>
               <Link
                 href={`/venda/${venda.id}`}
-                className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center "
+                className="px-6 py-5 w-full flex flex-col sm:flex-row justify-around hover:bg-gray-100 items-center "
               >
                 <span className="font-medium">Venda #{venda.id}</span>
                 <span className="font-medium hidden lg:block">

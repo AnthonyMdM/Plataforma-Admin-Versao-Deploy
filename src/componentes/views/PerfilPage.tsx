@@ -146,7 +146,7 @@ export default function PerfilPage() {
       <h1 className="flex flex-col sm:flex-row md:gap-2 text-3xl sm:text-4xl md:text-5xl font-roboto w-max justify-start font-semibold">
         <p>Bem Vindo:</p> <span>{session?.user.name}</span>
       </h1>
-      <div className="flex gap-10">
+      <div className="flex flex-wrap gap-3 md:gap-10">
         <div className="flex-col text-lg sm:text-lg md:text-lg font-roboto">
           <p>Seu email é:</p>
           <span className="ml-5">{session?.user.email}</span>

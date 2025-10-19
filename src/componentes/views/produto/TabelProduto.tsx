@@ -142,7 +142,7 @@ export default function ProdutoTabel() {
         </div>
       )}
 
-      <div className="flex flex-col gap-2 relative w-full max-w-md mb-6">
+      <div className="flex flex-col gap-2 relative w-full **:max-w-[10rem] sm:max-w-md mb-6">
         <label className="block font-medium">Buscar Produto</label>
         <div className="flex gap-2">
           <input
@@ -309,14 +309,14 @@ export default function ProdutoTabel() {
             </table>
           </div>
 
-          <div className="flex flex-col flex-wrap *:min-w-xs *:text-xl *:self-center *:text-center gap-4 sm:hidden mt-6 pb-5">
+          <div className="flex flex-col md:flex-row md:flex-wrap sm:*:min-w-[300px] justify-center w-max text-center gap-4 lg:hidden mt-1">
             {sortedData.map((item) => (
               <div
                 key={item.id}
-                className="border rounded-lg p-3 shadow-sm text-left"
+                className="border rounded-lg p-3 shadow-sm *:px-2"
               >
-                <p className="*:break-words">
-                  <strong>Produto:</strong> {item.Nome}
+                <p className="*:break-words flex flex-col">
+                  <strong>Produto:</strong> <span>{item.Nome}</span>
                 </p>
                 <p>
                   <strong>Unid.:</strong>

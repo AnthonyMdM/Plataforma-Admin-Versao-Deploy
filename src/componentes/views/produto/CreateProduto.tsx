@@ -39,12 +39,14 @@ export default function ProdutoCreate() {
 
   return (
     <section className="section">
-      <header className="mb-8">
+      <header className="mb-2 sm:mb-8">
         <h1 className="titulo">Criar Produto</h1>
-        <p className="text-gray-600">Preencha as informações do novo produto</p>
+        <p className="text-gray-600 hidden sm:block">
+          Preencha as informações do novo produto
+        </p>
       </header>
 
-      <form ref={formRef} className="space-y-6 font-sans" action={handleSubmit}>
+      <form ref={formRef} className="space-y-3 sm:space-y-6 font-sans" action={handleSubmit}>
         <div className="divForm !grid-col">
           <div>
             <label htmlFor="nome">Nome do Produto *</label>
@@ -188,7 +190,7 @@ export default function ProdutoCreate() {
                         ([, v]) => v === combobox.selected
                       )?.[0]
                     }
-                  </strong>{" "}
+                  </strong>
                   selecionada
                 </span>
               </p>
@@ -236,7 +238,7 @@ export default function ProdutoCreate() {
           </label>
         </fieldset>
 
-        <div className="flex justify-end pt-4 border-t border-gray-100">
+        <div className="flex justify-end pt-2 sm:pt-4 border-t border-gray-100">
           <ButtonForm />
         </div>
       </form>
