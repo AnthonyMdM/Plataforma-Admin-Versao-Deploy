@@ -61,7 +61,7 @@ export async function createProduto(
 
     const produtoExistente = await prisma.produto.findFirst({
       where: { Nome: validatedData.nome },
-      select: { id: true },
+      select: { id: true }
     });
 
     if (produtoExistente) {
@@ -133,7 +133,7 @@ export async function getProduto(id: number) {
   const produto = await prisma.produto.findUnique({
     where: {
       id,
-    },
+    }
   });
   return { produto };
 }
@@ -148,7 +148,7 @@ export async function getProdutos(): Promise<FormState<Produto[]>> {
         preco: true,
         perecivel: true,
         unidadePesagem: true,
-      },
+      }
     });
 
     const produtosFormatados = produtos.map((produto) => ({
@@ -252,7 +252,7 @@ export async function updateProduto(
       data: {
         Nome: nome,
         preco: valor,
-      },
+      }
     });
     revalidatePath(`/produtos/${idProduto}`);
     return {
@@ -273,7 +273,7 @@ export async function getProdutosMaisVendidos(): Promise<
 > {
   try {
     const produtos = await prisma.produtosMaisVendidos.findMany({
-      orderBy: { nome: "asc" },
+      orderBy: { nome: "asc" }
     });
 
     return {

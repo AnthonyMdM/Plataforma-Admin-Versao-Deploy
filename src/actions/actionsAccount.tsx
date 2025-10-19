@@ -75,7 +75,7 @@ export async function createUser(
         email: validatedData.email,
         hashedPassword: senhaHash,
         Role: validatedData.role.toUpperCase(),
-      },
+      }
     });
 
     return {

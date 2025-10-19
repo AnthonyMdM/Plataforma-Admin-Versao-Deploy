@@ -189,12 +189,12 @@ export async function getIdVendas() {
   return vendas;
 }
 
-export async function getVendasUserId(id: number) {
+export async function getVendasUserId(id: string) {
+  const userId = Number(id);
   const vendas = await prisma.venda.findMany({
     where: {
-      userId: id,
-    },
+      userId,
+    }
   });
-
   return { vendas };
 }
