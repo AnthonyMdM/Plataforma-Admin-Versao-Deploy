@@ -1,5 +1,14 @@
 import { getIdVendas } from "@/actions/actionsVendas";
 import VendasPageUnit from "@/componentes/views/vendas/UnitVendaPage";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Venda",
+  description: "Página para a venda",
+  icons: {
+    icon: "/sell.svg",
+  },
+};
 
 export async function generateStaticParams() {
   const ids = await getIdVendas();
