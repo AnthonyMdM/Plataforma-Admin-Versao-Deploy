@@ -5,6 +5,7 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Ignora rotas internas e estáticas
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -13,12 +14,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // ✅ Pegar token JWT (Edge-compatible)
+  // ✅ Pega o token JWT (Edge-compatible)
   const token = await getToken({
     req,
-    secret: process.env.AUTH_SECRET, // <--- obrigatório
-    raw: false, // opcional, retorna objeto decodificado
+    secret: process.env.AUTH_SECRET!,
+    secureCookie: process.env.NODE_ENV === "production",
   });
+
+  console.log("Token Middleware:", token);
 
   const isLoggedIn = !!token;
   const userRole = token?.role as string | undefined;
@@ -26,9 +29,7 @@ export async function middleware(req: NextRequest) {
   const publicRoutes = ["/login"];
   const adminRoutes = ["/register", "/produtos", "/criarProduto"];
 
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
 
   if (isLoggedIn && pathname.startsWith("/login")) {
@@ -54,5 +55,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/:path*",
+  matcher: ["/((?!_next|api|favicon.ico).*)"],
 };

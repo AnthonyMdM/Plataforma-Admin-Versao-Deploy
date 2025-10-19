@@ -6,14 +6,8 @@ import { getFindLogin } from "@/actions/actionsAccount";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
 
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60 * 24, // 24 horas
-  },
-
-  jwt: {
-    maxAge: 60 * 60 * 24, // 24 horas
-  },
+  session: { strategy: "jwt" },
+  jwt: { maxAge: 60 * 60 * 24 },
 
   providers: [
     Credentials({
