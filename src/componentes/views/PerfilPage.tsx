@@ -11,7 +11,6 @@ async function fetcher([_, id]: [string, string]) {
   return await getVendasUserId(id);
 }
 
-
 export default function PerfilPage() {
   const { data: session } = useSession();
   const { data, error, isLoading } = useSWR(
@@ -147,16 +146,20 @@ export default function PerfilPage() {
         <p>Bem Vindo:</p> <span>{session?.user.name}</span>
       </h1>
       <div className="flex flex-wrap gap-3 md:gap-10">
-        <div className="flex-col text-lg sm:text-lg md:text-lg font-roboto">
+        <div className="flex-col text-lg sm:text-xl md:text-2xl font-roboto">
           <p>Seu email é:</p>
-          <span className="ml-5">{session?.user.email}</span>
+          <span className="ml-5 text-sm sm:text-lg md:text-xl">
+            {session?.user.email}
+          </span>
         </div>
-        <div className="flex-col  text-lg sm:text-lg md:text-lg font-roboto">
+        <div className="flex-col text-lg sm:text-xl md:text-2xl font-roboto">
           <p>Seu Cargo é de:</p>
-          <span className="ml-5">{session?.user.role}</span>
+          <span className="ml-5 text-sm sm:text-lg md:text-xl">
+            {session?.user.role}
+          </span>
         </div>
       </div>
-      <div className="flex gap-4 text-lg mb-6 flex-wrap items-end">
+      <div className="flex gap-4 text-lg mb-6 flex-wrap items-end **:max-w-[10rem] sm:**:max-w-none">
         <div>
           <label className="block font-medium mb-1" htmlFor="selecionar-ano">
             Ano
@@ -307,7 +310,7 @@ export default function PerfilPage() {
             <li key={venda.id}>
               <Link
                 href={`/venda/${venda.id}`}
-                className="px-6 py-5 w-full flex justify-around hover:bg-gray-100 items-center "
+                className="px-6 py-5 w-full flex flex-col sm:flex-row justify-around hover:bg-gray-100 items-center "
               >
                 <span className="font-medium">Venda #{venda.id}</span>
                 <span className="font-medium hidden lg:block">
