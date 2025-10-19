@@ -2,7 +2,6 @@
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { signIn } from "@/auth";
-import { redirect } from "next/navigation";
 import { FormState } from "@/types/tyeps-global";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
@@ -119,17 +118,18 @@ export async function actionLogin(
     const result = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: false,
     });
 
-    if (!result || result.error) {
+    if (!result) {
       return {
         success: false,
         errors: ["Email ou senha incorretos"],
       };
     }
-
-    redirect("/perfil");
+    return {
+      success: true,
+      errors: [],
+    };
   } catch (error: any) {
     if (error.message?.includes("NEXT_REDIRECT")) {
       throw error;
