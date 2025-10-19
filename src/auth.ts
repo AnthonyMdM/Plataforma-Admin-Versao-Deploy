@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "@auth/core/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { getFindLogin } from "@/actions/actionsAccount";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

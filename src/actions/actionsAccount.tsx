@@ -1,6 +1,6 @@
 "use server";
 import { z } from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
 import { FormState } from "@/types/tyeps-global";
@@ -75,7 +75,7 @@ export async function createUser(
         email: validatedData.email,
         hashedPassword: senhaHash,
         Role: validatedData.role.toUpperCase(),
-      }
+      },
     });
 
     return {
