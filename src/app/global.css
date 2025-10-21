@@ -23,11 +23,11 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-.main {
-  @apply bg-gray-200 mx-auto px-6 pt-4 pb-8 flex flex-col items-center lg:items-stretch w-full h-full text-black overflow-auto;
+@layer components {
+  .main {
+    @apply sm:bg-gray-200 sm:mx-auto sm:px-6 sm:pt-4 sm:pb-8 sm:flex sm:flex-col sm:items-center sm:lg:items-stretch sm:w-full sm:h-full sm:text-black overflow-auto;
+  }
 }
-
 .section {
   @apply bg-white w-full max-w-sm p-6 rounded-2xl shadow-md md:max-w-[1000px] lg:max-w-none;
 }
