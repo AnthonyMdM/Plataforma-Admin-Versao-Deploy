@@ -38,17 +38,18 @@ O sistema oferece uma **interface moderna e responsiva**, centralizando o gerenc
 ---
 
 ## 🧩 Estrutura do Projeto
-
+```
 Plataforma-Vendas/
-├── prisma/ # Schema e migrações do banco de dados
+├── prisma/              # Schema e migrações do banco de dados
 ├── src/
-│ ├── app/ # Páginas e rotas do Next.js
-│ ├── components/ # Componentes reutilizáveis
-│ ├── lib/ # Configurações e utilitários
-│ └── styles/ # Estilos globais
-├── public/ # Imagens, diagramas, prévias
-├── .env.local # Variáveis de ambiente (Supabase)
-└── package.json # Dependências e scripts do projeto
+│   ├── app/            # Páginas e rotas do Next.js
+│   ├── components/     # Componentes reutilizáveis
+│   ├── lib/            # Configurações e utilitários
+│   └── styles/         # Estilos globais
+├── public/             # Imagens, diagramas, prévias
+├── .env.local          # Variáveis de ambiente (Supabase)
+└── package.json        # Dependências e scripts do projeto
+```
 
 ---
 
@@ -73,6 +74,7 @@ O diagrama abaixo representa a estrutura do banco de dados hospedado na **Supaba
    - `unidadePesagem` (String?)
    - `total_vendido` (Float?)
    - `valor_total` (BigInt?)
+
 2. **vendas_telas**
    - `id` (Int?)
    - `Name` (String?)
@@ -95,56 +97,70 @@ O diagrama abaixo representa a estrutura do banco de dados hospedado na **Supaba
 
 ## 💻 Como Executar Localmente
 
-1. **Clone o repositório**
-
+### 1. Clone o repositório
 ```bash
 git clone https://github.com/AnthonyMdM/Plataforma-Admin.git
+cd Plataforma-Admin
 ```
 
-2. **Instalar Dependências**
-
+### 2. Instalar Dependências
 ```bash
 npm install
 ```
 
-3. **Configure o banco na Supabase e crie o arquivo .env**
-
-```# Chave secreta para proteger tokens e sessões
+### 3. Configure o banco na Supabase e crie o arquivo `.env.local`
+```env
+# Chave secreta para proteger tokens e sessões
 AUTH_SECRET="XXXXXXXXX"
-```
 
-```# URL base do site ou aplicação
+# URL base do site ou aplicação
 AUTH_URL="http://localhost:3000/"
+
+# Conexão direta ao banco PostgreSQL na Supabase
+DIRECT_URL="postgres://usuario:senha@endereco.supabase.co:5432/nome_do_banco"
+
+# URL do banco da Supabase
+DATABASE_URL="postgres://usuario:senha@endereco.supabase.co:5432/nome_do_banco"
 ```
 
-```# Conexão direta ao banco PostgreSQL na Supabase
-DIRECT_URL=postgres://usuario:senha@endereco.supabase.co:5432/nome_do_banco
-```
-
-```# URL do banco da Supabase
-DATABASE_URL=postgres://usuario:senha@endereco.supabase.co:5432/nome_do_banco
-```
-
-4. **Configuração do Prisma (schema.prisma)**
-   generator client {
-   provider = "prisma-client-js"
-   previewFeatures = ["views"]
-   }
-
-datasource db {
-provider = "postgresql"
-url = env("DATABASE_URL")
-directUrl = env("DIRECT_URL")
+### 4. Configuração do Prisma (`schema.prisma`)
+```prisma
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
-5. **Execute as migrações**
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+```
 
+### 5. Execute as migrações
 ```bash
 npx prisma migrate dev
 ```
 
-5. **Inicie o servidor**
-
+### 6. Inicie o servidor
 ```bash
 npm run dev
 ```
+
+Acesse a aplicação em: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais informações.
+
+---
+
+## 🤝 Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
+
+---
+
+**Desenvolvido por [Anthony MdM](https://github.com/AnthonyMdM)**
