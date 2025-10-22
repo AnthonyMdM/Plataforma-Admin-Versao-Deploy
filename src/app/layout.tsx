@@ -17,7 +17,8 @@ export const metadata: Metadata = {
   title: "Administração",
   description: "Meu Site Para administrar vendas",
   icons: {
-    icon: "/book.svg",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
   },
 };
 

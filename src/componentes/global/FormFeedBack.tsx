@@ -8,12 +8,10 @@ export default function FormFeedback({ state }: { state: FormState }) {
         className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg 
                    flex items-center gap-2 mt-6 animate-in slide-in-from-top duration-300 mb-10"
       >
-        <span className="font-medium">Criado com sucesso!</span>
+        <span className="font-medium">Sucesso!</span>
       </div>
     );
-  }
-
-  if (!state.success && state.errors.length > 0) {
+  } else {
     return (
       <div
         role="alert"
